@@ -33,7 +33,8 @@ namespace FoodStore
             })
             .AddRoles<IdentityRole>() 
             .AddEntityFrameworkStores<FoodStoreDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddDefaultUI();
 
 
             builder.Services.AddControllersWithViews();
@@ -65,6 +66,7 @@ namespace FoodStore
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
             app.MapRazorPages();
 
             app.Run();

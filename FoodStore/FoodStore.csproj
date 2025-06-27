@@ -15,4 +15,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
+    <ProjectReference Include="..\FoodStore.Data\FoodStore.Data.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -22,7 +22,7 @@ namespace FoodStore.Data.Migrations
                     { 3, "Bulgaria", "Moravsko selo" },
                     { 4, "Bulgaria", "Meggle" },
                     { 5, "Bulgaria", "Activia" },
-                    { 6, "Bulgaria", "Activia" },
+                    { 6, "Bulgaria", "Danone" },
                     { 7, "Germany", "Sonnenweg" },
                     { 8, "Bulgaria", "Harmonica" },
                     { 9, "Bulgaria", "Gradus" },

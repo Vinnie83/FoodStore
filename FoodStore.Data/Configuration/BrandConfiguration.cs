@@ -41,7 +41,7 @@ namespace FoodStore.Data.Configuration
                 new Brand { Id = 3, Name = "Moravsko selo", CountryOfOrigin = "Bulgaria" },
                 new Brand { Id = 4, Name = "Meggle", CountryOfOrigin = "Bulgaria" },
                 new Brand { Id = 5, Name = "Activia", CountryOfOrigin = "Bulgaria" },
-                new Brand { Id = 6, Name = "Activia", CountryOfOrigin = "Bulgaria" },
+                new Brand { Id = 6, Name = "Danone", CountryOfOrigin = "Bulgaria" },
                 new Brand { Id = 7, Name = "Sonnenweg", CountryOfOrigin = "Germany" },
                 new Brand { Id = 8, Name = "Harmonica", CountryOfOrigin = "Bulgaria" },
                 new Brand { Id = 9, Name = "Gradus", CountryOfOrigin = "Bulgaria" },

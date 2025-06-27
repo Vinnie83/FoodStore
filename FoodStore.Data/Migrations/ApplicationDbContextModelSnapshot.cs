@@ -174,7 +174,8 @@ namespace FoodStore.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -417,10 +418,9 @@ namespace FoodStore.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("FoodStore.Data.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Order");
 
@@ -523,6 +523,11 @@ namespace FoodStore.Data.Migrations
             modelBuilder.Entity("FoodStore.Data.Models.Order", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("FoodStore.Data.Models.Product", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("FoodStore.Data.Models.Supplier", b =>

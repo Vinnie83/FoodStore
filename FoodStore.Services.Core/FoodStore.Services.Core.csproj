@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FoodStore.Data.Models\FoodStore.Data.Models.csproj" />
+    <ProjectReference Include="..\FoodStore.Data\FoodStore.Data.csproj" />
+    <ProjectReference Include="..\FoodStore.ViewModels\FoodStore.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

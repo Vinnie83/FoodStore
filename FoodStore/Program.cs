@@ -1,5 +1,7 @@
 using FoodStore.Data;
 using FoodStore.Data.Models;
+using FoodStore.Services.Core.Contracts;
+using FoodStore.Services.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +37,8 @@ namespace FoodStore
             .AddEntityFrameworkStores<FoodStoreDbContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
+
+            builder.Services.AddScoped<IProductService, ProductService>();
 
 
             builder.Services.AddControllersWithViews();

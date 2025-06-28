@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -17,7 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
+    <ProjectReference Include="..\FoodStore.Data.Models\FoodStore.Data.Models.csproj" />
     <ProjectReference Include="..\FoodStore.Data\FoodStore.Data.csproj" />
+    <ProjectReference Include="..\FoodStore.Services.Core\FoodStore.Services.Core.csproj" />
+    <ProjectReference Include="..\FoodStore.ViewModels\FoodStore.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

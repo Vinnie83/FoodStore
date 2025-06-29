@@ -10,8 +10,8 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-top border-bottom box-shadow mb-3">
+            <div class="container-fluid align-items-center d-flex justify-content-between">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FoodStore</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -25,12 +25,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-1" asp-controller="Cart" asp-action="Index">
+                                <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" style="width: 20px; height: 20px;" />
+                                <span>Cart</span>
+                            </a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-        <nav class="navbar navbar-expand navbar-light bg-light border-bottom">
+        <nav class="navbar navbar-expand category-bar">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Category" asp-route-category="Fruits and vegetables">Fruits and vegetables</a></li>
                 <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Category" asp-route-category="Milk and eggs">Milk and eggs</a></li>

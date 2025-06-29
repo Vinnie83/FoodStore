@@ -20,3 +20,46 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+/* Clean white category bar */
+.navbar.category-bar {
+    background-color: white;
+    padding: 12px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+    /* Bold black category links */
+    .navbar.category-bar .nav-link {
+        color: #000 !important;
+        font-weight: bold;
+        padding: 8px 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: color 0.2s ease;
+    }
+
+        /* Hover effect */
+        .navbar.category-bar .nav-link:hover {
+            color: #007bff !important;
+            text-decoration: underline;
+        }
+
+/* Top nav customization */
+.navbar-top {
+    background-color: #FFAB33; /* Change this to any hex color you choose */
+    padding: 10px 0;
+}
+
+    /* Links inside the top nav */
+    .navbar-top .nav-link,
+    .navbar-top .navbar-brand {
+        color: white !important;
+        font-weight: 600;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: color 0.3s ease;
+    }
+
+        .navbar-top .nav-link:hover {
+            color: #dbeeff !important;
+        }

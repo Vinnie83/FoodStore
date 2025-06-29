@@ -23,4 +23,8 @@
     <ProjectReference Include="..\FoodStore.ViewModels\FoodStore.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

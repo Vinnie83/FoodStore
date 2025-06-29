@@ -36,5 +36,28 @@ namespace FoodStore.Services.Core
 
             return productsByCategory;
         }
+
+        public async Task<ProductDetailsViewModel> GetProductByIdAsync(int productId)
+        {
+            ProductDetailsViewModel? productDetails = await this.dbContext
+                .Products
+                .AsNoTracking()
+                .Where(p => p.Id == productId)
+                .Select(p => new ProductDetailsViewModel()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    ImageUrl = p.ImageUrl ?? $"~/images/{NoImageUrl}",
+                    Price = p.Price,
+                    StockQuantity = p.Quantity,
+                    UnitQuantity = "1",
+                    Brand = p.Brand.Name,
+                    Category = p.Category.Name
+                })
+                .FirstOrDefaultAsync();
+
+            return productDetails;
+
+        }
     }
 }

@@ -12,6 +12,20 @@
             <p><strong>Price:</strong> @Model.Price lv.</p>
             <p><strong>Available:</strong> @Model.StockQuantity pcs</p>
             <p><strong>Unit:</strong> @Model.UnitQuantity</p>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Cart" asp-action="Add" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="quantity" value="1" />
+                    <button type="submit" class="btn btn-success mt-3">Add to Cart</button>
+                </form>
+            }
+            else
+            {
+                <p class="text-muted mt-3">
+                    Please <a href="~/Identity/Account/Login">log in</a> to add items to your cart.
+                </p>
+            }
             <a asp-action="Category" asp-controller="Product" asp-route-category="@Model.Category" class="btn btn-secondary mt-3">Back to Products</a>
         </div>
     </div>

@@ -39,6 +39,7 @@ namespace FoodStore
             .AddDefaultUI();
 
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
 
             builder.Services.AddControllersWithViews();

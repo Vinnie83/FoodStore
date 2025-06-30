@@ -3,9 +3,16 @@
 
 <h2>Your Cart</h2>
 
-<form asp-action="Clear" asp-controller="Cart" method="post">
-    <button type="submit" class="btn btn-warning mb-3">Clear Cart</button>
-</form>
+<div class="d-flex justify-content-between mb-3">
+
+    <form asp-action="Clear" asp-controller="Cart" method="post">
+        <button type="submit" class="btn btn-warning">Clear Cart</button>
+    </form>
+
+    <a asp-action="History" asp-controller="Cart" class="btn btn-primary">
+        View Order History
+    </a>
+</div>
 
 @if (!Model.Any())
 {

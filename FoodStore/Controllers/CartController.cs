@@ -155,5 +155,22 @@ namespace FoodStore.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> History()
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null) return RedirectToAction("Login", "User");
+
+                var orders = await cartService.GetOrderHistoryAsync(userId);
+                return View(orders);
+            }
+            catch
+            {
+                return View("ServerError");
+            }
+        }
     }
 }

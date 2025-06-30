@@ -127,5 +127,25 @@ namespace FoodStore.Services.Core
             await dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<OrderHistoryViewModel>> GetOrderHistoryAsync(string userId)
+        {
+            var orders = await this.dbContext
+                .Orders
+                .Where(o => o.UserId == userId && o.OrderStatus != OrderStatus.Pending)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderHistoryViewModel()
+                {
+                    OrderId = o.Id,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+                    OrderStatus = o.OrderStatus.ToString(),
+                    PaymentStatus = o.PaymentStatus.ToString()
+
+                })
+                .ToListAsync();
+
+            return orders;
+        }
     }
 }

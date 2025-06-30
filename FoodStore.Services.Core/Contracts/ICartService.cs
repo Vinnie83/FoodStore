@@ -15,7 +15,7 @@ namespace FoodStore.Services.Core.Contracts
         Task<List<CartItemViewModel>> GetCartItemsAsync(string userId);
         Task RemoveFromCartAsync(string userId, int productId);
         Task ClearCartAsync(string userId);
-
         Task<bool> CheckoutAsync(string userId);
+        Task<List<OrderHistoryViewModel>> GetOrderHistoryAsync(string userId);
     }
 }

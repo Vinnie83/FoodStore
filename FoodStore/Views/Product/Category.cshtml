@@ -22,12 +22,19 @@ else
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <div class="input-group mb-2" style="width: 120px;">
-                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty(this)">-</button>
-                                <input type="number" class="form-control text-center" value="1" min="1" max="@product.StockQuantity" />
-                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(this)">+</button>
-                            </div>
-                            <button class="btn btn-success btn-sm">🛒 Add to Cart</button>
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                <div class="input-group mb-2" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty(this)">-</button>
+                                    <input type="number" name="quantity" class="form-control text-center" value="1" min="1" max="@product.StockQuantity" />
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(this)">+</button>
+                                </div>
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-success btn-sm">🛒 Add to Cart</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <p class="text-muted small">Please <a href="~/Identity/Account/Login">log in</a> to add items to your cart.</p>
                         }
 
                         <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="btn btn-primary">Details</a>

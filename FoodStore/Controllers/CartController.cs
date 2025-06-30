@@ -1,5 +1,9 @@
-﻿using FoodStore.Services.Core.Contracts;
+﻿using FoodStore.Data.Models;
+using FoodStore.Data.Models.Enums;
+using FoodStore.Services.Core.Contracts;
+using FoodStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodStore.Controllers
 {
@@ -20,7 +24,7 @@ namespace FoodStore.Controllers
                 var userId = GetUserId();
                 if (userId == null)
                 {
-                    return View("NotFound"); // Custom 404
+                    return Redirect("/Identity/Account/Login");
                 }
 
                 var cartItems = await cartService.GetCartItemsAsync(userId);
@@ -93,6 +97,63 @@ namespace FoodStore.Controllers
             {
                 return View("ServerError");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var cartItems = await cartService.GetCartItemsAsync(userId);
+
+                return View(cartItems);
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckoutConfirm()
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var success = await cartService.CheckoutAsync(userId);
+
+                if (!success)
+                {
+                    TempData["Error"] = "Your cart is empty!";
+                    return RedirectToAction("Index");
+                }
+
+                await cartService.ClearCartAsync(userId);
+
+                return RedirectToAction("ThankYou");
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ThankYou()
+        {
+            return View();
         }
     }
 }

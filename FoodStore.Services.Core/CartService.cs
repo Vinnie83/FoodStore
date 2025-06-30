@@ -109,5 +109,23 @@ namespace FoodStore.Services.Core
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> CheckoutAsync(string userId)
+        {
+            var cart = await GetOrCreateCartAsync(userId);
+
+            if (!cart.Items.Any())
+            {
+                return false;
+            }
+
+            cart.OrderStatus = OrderStatus.Processed;
+            cart.OrderDate = DateTime.UtcNow;
+            cart.TotalAmount = cart.Items.Sum(i => i.Price * i.Quantity);
+            cart.PaymentStatus = PaymentStatus.Paid;
+
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

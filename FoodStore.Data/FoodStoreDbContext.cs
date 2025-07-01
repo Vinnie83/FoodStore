@@ -19,6 +19,8 @@ namespace FoodStore.Data
         public virtual DbSet<OrderItem> OrderItems { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
 
+        public DbSet<UserProduct> UsersProducts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

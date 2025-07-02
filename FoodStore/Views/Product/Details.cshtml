@@ -19,6 +19,10 @@
                     <input type="hidden" name="quantity" value="1" />
                     <button type="submit" class="btn btn-success mt-3">Add to Cart</button>
                 </form>
+                <form asp-controller="Favorites" asp-action="Add" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-outline-primary">Add to Favorites</button>
+                </form>
             }
             else
             {

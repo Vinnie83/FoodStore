@@ -1,6 +1,10 @@
 ﻿@using FoodStore.ViewModels
 @model IEnumerable<FavoriteProductViewModel>
 
+@{
+    ViewData["Title"] = "Favorites";
+}
+
 <h2>Your Favorites</h2>
 
 @if (!Model.Any())

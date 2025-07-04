@@ -17,29 +17,47 @@ namespace FoodStore.Controllers
         [HttpGet]
         public async Task<IActionResult> Category(string category)
         {
-            IEnumerable<ProductViewModel> products = await this.productService
-                .GetByCategoryAsync(category);
-
-            var viewModel = new CategoryProductsViewModel
+            try
             {
-                CategoryName = category,
-                Products = products
-            };
+                if (string.IsNullOrWhiteSpace(category))
+                {
+                    return NotFound();
+                }
 
-            return View(viewModel);
+                var products = await productService.GetByCategoryAsync(category);
+
+                var viewModel = new CategoryProductsViewModel
+                {
+                    CategoryName = category,
+                    Products = products
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var product = await productService.GetProductByIdAsync(id);
-
-            if (product == null)
+            try
             {
-                return NotFound();
-            }
+                var product = await productService.GetProductByIdAsync(id);
 
-            return View(product);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return View(product);
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
         }
     }
 }

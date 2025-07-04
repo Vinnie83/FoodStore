@@ -20,31 +20,61 @@ namespace FoodStore.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = GetUserId();
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                {
+                    return Redirect("/Identity/Account/Login");
+                }
 
-            var favorites = await favoritesService.GetUserFavoritesAsync(userId);
-
-            return View(favorites);
+                var favorites = await favoritesService.GetUserFavoritesAsync(userId);
+                return View(favorites);
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(int productId)
         {
-            var userId = GetUserId();
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                {
+                    return Redirect("/Identity/Account/Login");
+                }
 
-            await favoritesService.AddToFavoritesAsync(userId, productId);
-
-            return RedirectToAction("Index");
+                await favoritesService.AddToFavoritesAsync(userId, productId);
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Remove(int productId)
         {
-            var userId = GetUserId();
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                {
+                    return Redirect("/Identity/Account/Login");
+                }
 
-            await favoritesService.RemoveFromFavoritesAsync(userId, productId);
-
-            return RedirectToAction("Index");
+                await favoritesService.RemoveFromFavoritesAsync(userId, productId);
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
         }
     }
 }

@@ -1,6 +1,10 @@
 ﻿@using FoodStore.ViewModels
 @model CategoryProductsViewModel
 
+@{
+    ViewData["Title"] = "Product Category";
+}
+
 <h2>@Model.CategoryName</h2>
 
 @if (!Model.Products.Any())

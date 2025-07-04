@@ -4,12 +4,13 @@ using FoodStore.Services.Core.Contracts;
 using FoodStore.Services.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FoodStore.Data.Configuration;
 
 namespace FoodStore
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,7 @@ namespace FoodStore
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IFavoritesService, FavoritesService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
 
 
             builder.Services.AddControllersWithViews();
@@ -74,6 +76,17 @@ namespace FoodStore
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                await AdminSeeder.SeedAdminAsync(scope.ServiceProvider);
+            }
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 
             app.MapControllerRoute(
                 name: "default",

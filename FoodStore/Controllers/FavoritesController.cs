@@ -1,10 +1,12 @@
 ﻿using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStore.Controllers
 {
+    [Authorize]
     public class FavoritesController : BaseController
     {
         private readonly IFavoritesService favoritesService;

@@ -2,11 +2,13 @@
 using FoodStore.Data.Models.Enums;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodStore.Controllers
 {
+    [Authorize]
     public class CartController : BaseController
     {
         private readonly ICartService cartService;

@@ -63,3 +63,10 @@ body {
         .navbar-top .nav-link:hover {
             color: #dbeeff !important;
         }
+
+.hero-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}

@@ -1,0 +1,28 @@
+﻿@using FoodStore.ViewModels.Admin;
+@model AddBrandInputModel
+
+@{
+    ViewData["Title"] = "Add Brand";
+}
+
+<h2 class="mb-4">Add a New Brand</h2>
+
+<form asp-area="Admin" asp-controller="Brand" asp-action="AddBrand" method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Brand Name</label>
+        <input asp-for="Name" class="form-control" placeholder="Enter brand name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CountryOfOrigin" class="form-label">Country of Origin</label>
+        <input asp-for="CountryOfOrigin" class="form-control" placeholder="Enter country" />
+        <span asp-validation-for="CountryOfOrigin" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Brand</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

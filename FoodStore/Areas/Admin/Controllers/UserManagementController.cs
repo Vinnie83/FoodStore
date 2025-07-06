@@ -6,22 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStore.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class UserManagementController : Controller
+
+    public class UserManagementController : AdminBaseController
     {
-        private readonly IAdminService adminService;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+
 
         public UserManagementController(
             IAdminService adminService,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
+            : base(adminService, userManager, roleManager)
         {
-            this.adminService = adminService;
-            this.userManager = userManager;
-            this.roleManager = roleManager;
+
         }
 
         public async Task<IActionResult> Index()

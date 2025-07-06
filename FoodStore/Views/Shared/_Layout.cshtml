@@ -55,6 +55,16 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="Admin" asp-controller="AddProduct" asp-action="Create">Add Product</a>
                                 </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="brandDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Brands
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="brandDropdown">
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Brand" asp-action="Index">All Brands</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Brand" asp-action="AddBrand">Add Brand</a></li>
+                                    </ul>
+                                </li>
                             }
                         }
                         <li class="nav-item">

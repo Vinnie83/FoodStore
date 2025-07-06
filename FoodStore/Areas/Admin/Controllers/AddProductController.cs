@@ -7,14 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStore.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class AddProductController : Controller
+    public class AddProductController : AdminBaseController
     {
 
-        private readonly IAdminService adminService;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
         private readonly IBrandService brandService;
@@ -28,10 +23,9 @@ namespace FoodStore.Areas.Admin.Controllers
             ICategoryService categoryService,
             IBrandService brandService,
             ISupplierService supplierService)
+            : base(adminService, userManager, roleManager)
         {
-            this.adminService = adminService;
-            this.userManager = userManager;
-            this.roleManager = roleManager;
+  
             this.productService = productService;
             this.categoryService = categoryService;
             this.brandService = brandService;

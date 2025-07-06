@@ -39,16 +39,39 @@ namespace FoodStore.Services.Core
             return addBrandsAsDropDown;
         }
 
-        public async Task<bool> AddBrandAsync(AddBrandInputModel model)
+        public async Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync()
+        {
+            var allBrands = await this.dbContext
+                .Brands
+                .AsNoTracking()
+                .Select(b => new BrandViewModel()
+                {
+                    Name = b.Name,
+                    CountryOfOrigin = b.CountryOfOrigin
+                })
+                .ToListAsync();
+
+            return allBrands;
+        }
+
+
+        public async Task<bool> AddBrandAsync(string userId, AddBrandInputModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.CountryOfOrigin))
                 return false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
 
             bool exists = await dbContext.Brands
                 .AnyAsync(b => b.Name.ToLower() == model.Name.ToLower());
 
             if (exists)
                 return false;
+
+            if (user == null)
+            {
+                return false;
+            }
 
             var newBrand = new Brand
             {

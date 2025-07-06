@@ -10,5 +10,6 @@ namespace FoodStore.Services.Core.Contracts
     public interface ISupplierService 
     {
         Task<IEnumerable<AddSupplierDropDownMenu>> GetSuppliersDropDownAsync();
+        Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync();
     }
 }

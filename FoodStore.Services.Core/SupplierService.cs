@@ -18,6 +18,7 @@ namespace FoodStore.Services.Core
         {
             this.dbContext = dbContext;      
         }
+
         public async Task<IEnumerable<AddSupplierDropDownMenu>> GetSuppliersDropDownAsync()
         {
             IEnumerable<AddSupplierDropDownMenu> addSuppliersAsDropDown = await this.dbContext
@@ -32,6 +33,23 @@ namespace FoodStore.Services.Core
                 .ToArrayAsync();
 
             return addSuppliersAsDropDown;
+        }
+
+        public async Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync()
+        {
+            var allSuppliers = await this.dbContext
+                .Suppliers
+                .AsNoTracking()
+                .Select(s => new SupplierViewModel()
+                {
+                    Name = s.Name,
+                    Phone = s.Phone,
+                    EmailAddress = s.EmailAddress
+                    
+                })
+                .ToListAsync();
+
+            return allSuppliers;
         }
     }
 }

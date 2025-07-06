@@ -1,0 +1,39 @@
+﻿@using FoodStore.ViewModels.Admin
+@model IEnumerable<SupplierViewModel>
+
+@{
+    ViewData["Title"] = "Suppliers";
+}
+
+<h2 class="mb-4">All Suppliers</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">No suppliers available.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Supplier Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var brand in Model.Select((value, index) => new { value, index }))
+                {
+                    <tr>
+                        <td>@(brand.index + 1)</td>
+                        <td>@brand.value.Name</td>
+                        <td>@brand.value.Phone</td>
+                        <td>@brand.value.EmailAddress</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

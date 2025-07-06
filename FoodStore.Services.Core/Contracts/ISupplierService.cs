@@ -11,5 +11,7 @@ namespace FoodStore.Services.Core.Contracts
     {
         Task<IEnumerable<AddSupplierDropDownMenu>> GetSuppliersDropDownAsync();
         Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync();
+
+        Task<bool> AddSupplierAsync(string userId, AddSupplierInputModel inputModel);
     }
 }

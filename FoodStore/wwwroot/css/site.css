@@ -70,3 +70,57 @@ body {
     object-fit: cover;
     display: block;
 }
+
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    max-width: 900px;
+    padding: 2rem;
+    margin: auto;
+    background-color: #fff;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #5c3d23;
+}
+
+.form-control,
+.form-select {
+    background-color: #fffaf0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.5rem;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .save-btn:hover {
+        background-color: #218838;
+    }
+
+.validation {
+    color: red;
+    font-size: 0.85rem;
+}

@@ -49,6 +49,9 @@ namespace FoodStore
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IFavoritesService, FavoritesService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 
             builder.Services.AddControllersWithViews();

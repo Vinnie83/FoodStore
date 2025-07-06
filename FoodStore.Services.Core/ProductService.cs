@@ -1,19 +1,28 @@
 ﻿using FoodStore.Data;
+using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels;
+using FoodStore.ViewModels.Admin;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static FoodStore.GCommon.ValidationConstants;
+using Category = FoodStore.Data.Models.Category;
+using Product = FoodStore.Data.Models.Product;
 
 namespace FoodStore.Services.Core
 {
     public class ProductService : IProductService
     {
         private readonly FoodStoreDbContext dbContext;
-        
-        public ProductService(FoodStoreDbContext dbContext)
+        private readonly UserManager<ApplicationUser> userManager;
+
+        public ProductService(FoodStoreDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
             this.dbContext = dbContext;
+            this.userManager = userManager;
         }
+
+
         public async Task<IEnumerable<ProductViewModel>> GetByCategoryAsync(string categoryName)
         {
             IEnumerable<ProductViewModel> productsByCategory = await this.dbContext
@@ -58,6 +67,46 @@ namespace FoodStore.Services.Core
 
             return productDetails;
 
+        }
+
+        public async Task<bool> AddProductAsync(string userId, ProductCreateInputModel model)
+        {
+            bool operResult = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Category? catReference = await this.dbContext.Categories.FindAsync(model.CategoryId);
+
+            if ((user != null) && (catReference != null)) 
+            {
+                Product product = new Product()
+                {
+                    Name = model.Name,
+                    ImageUrl = model.ImageUrl,
+                    Price = model.Price,
+                    CategoryId = model.CategoryId,
+                    BrandId = model.BrandId,
+                    SupplierId = model.SupplierId,
+                    Quantity = model.StockQuantity,
+
+                };
+
+                await this.dbContext.Products.AddAsync(product);    
+                await this.dbContext.SaveChangesAsync();
+
+                operResult = true;
+            }
+
+            return operResult;
+        }
+
+        public async Task<string?> GetCategoryNameByIdAsync(int categoryId)
+        {
+            return await this.dbContext
+            .Categories
+            .Where(c => c.Id == categoryId)
+            .Select(c => c.Name)
+            .FirstOrDefaultAsync();
         }
     }
 }

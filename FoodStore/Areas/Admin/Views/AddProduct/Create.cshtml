@@ -1,0 +1,66 @@
+﻿@using FoodStore.ViewModels.Admin
+@model ProductCreateInputModel
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+
+<form asp-action="Create" method="post" class="form-container">
+
+    <div class="form-group">
+        <label asp-for="Name" class="form-label">Product Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="validation"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId" class="form-label">Category</label>
+        <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "CategoryName"))" class="form-select">
+            <option disabled selected>-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="validation"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BrandId" class="form-label">Brand</label>
+        <select asp-for="BrandId" asp-items="@(new SelectList(Model.Brands, "Id", "BrandName"))" class="form-select">
+            <option disabled selected>-- Select Brand --</option>
+        </select>
+        <span asp-validation-for="BrandId" class="validation"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SupplierId" class="form-label">Supplier</label>
+        <select asp-for="SupplierId" asp-items="@(new SelectList(Model.Suppliers, "Id", "SupplierName"))" class="form-select">
+            <option disabled selected>-- Select Supplier --</option>
+        </select>
+        <span asp-validation-for="SupplierId" class="validation"></span>
+    </div>
+
+    <div class="form-group full-width">
+        <label asp-for="ImageUrl" class="form-label">Image URL</label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="validation"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price" class="form-label">Price</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="validation"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StockQuantity" class="form-label">Stock Quantity</label>
+        <input asp-for="StockQuantity" class="form-control" />
+        <span asp-validation-for="StockQuantity" class="validation"></span>
+    </div>
+
+    <div class="form-group full-width" style="text-align:center; margin-top: 1.5rem;">
+        <button type="submit" class="save-btn">Save</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -119,6 +119,24 @@ namespace FoodStore.Services.Core
                 return false;
             }
 
+            foreach (var item in cart.Items)
+            {
+                var product = await dbContext.Products.FindAsync(item.ProductId);
+
+                if (product == null)
+                {
+                    throw new Exception($"Product with ID {item.ProductId} not found.");
+                }
+
+                if (product.Quantity < item.Quantity)
+                {
+                    throw new Exception($"Insufficient stock for product: {product.Name}");
+                }
+
+                product.Quantity -= item.Quantity;
+            }
+
+
             cart.OrderStatus = OrderStatus.Processed;
             cart.OrderDate = DateTime.UtcNow;
             cart.TotalAmount = cart.Items.Sum(i => i.Price * i.Quantity);

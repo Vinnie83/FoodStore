@@ -6,8 +6,10 @@ using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static FoodStore.GCommon.ValidationConstants;
+using Brand = FoodStore.Data.Models.Brand;
 using Category = FoodStore.Data.Models.Category;
 using Product = FoodStore.Data.Models.Product;
+using Supplier = FoodStore.Data.Models.Supplier;
 
 namespace FoodStore.Services.Core
 {
@@ -107,6 +109,81 @@ namespace FoodStore.Services.Core
             .Where(c => c.Id == categoryId)
             .Select(c => c.Name)
             .FirstOrDefaultAsync();
+        }
+
+        public async Task<EditProductInputModel?> GetProductForEditingAsync (string userId, int? id)
+        {
+            EditProductInputModel? model = null!;
+
+            if (id != null)
+            {
+
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                Product? editModel = await this.dbContext
+                    .Products
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.Id == id);
+
+                if (editModel != null && userId.ToLower() == user?.Id.ToLower())
+                {
+                    model = new EditProductInputModel()
+                    {
+                        Id = editModel.Id,
+                        Name = editModel.Name,
+                        ImageUrl = editModel.ImageUrl,
+                        Price = editModel.Price,
+                        CategoryId = editModel.CategoryId,
+                        BrandId = editModel.BrandId,
+                        SupplierId = editModel.SupplierId,
+                        StockQuantity = editModel.Quantity,
+                    };
+                    
+                }
+            
+            }
+            return model;
+        }
+
+        public async Task<bool> PersistUpdatedProductAsync(string userId, EditProductInputModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Product? updatedProduct = await this.dbContext
+                 .Products
+                 .FindAsync(inputModel.Id);
+
+            Category? catReference = await this.dbContext
+                .Categories
+                .FindAsync(inputModel.CategoryId);
+
+            Brand? brandReference = await this.dbContext
+                .Brands
+                .FindAsync(inputModel.BrandId);
+
+            Supplier? supplierReference = await this.dbContext
+                .Suppliers 
+                .FindAsync(inputModel.SupplierId);
+
+            if ((user != null) && (catReference != null) && (brandReference != null)
+                && (supplierReference != null) && (updatedProduct != null))
+            {
+                updatedProduct.Name = inputModel.Name;
+                updatedProduct.ImageUrl = inputModel.ImageUrl;
+                updatedProduct.Price = inputModel.Price;
+                updatedProduct.CategoryId = inputModel.CategoryId;
+                updatedProduct.BrandId = inputModel.BrandId;
+                updatedProduct.SupplierId = inputModel.SupplierId;
+                updatedProduct.Quantity = inputModel.StockQuantity;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
         }
     }
 }

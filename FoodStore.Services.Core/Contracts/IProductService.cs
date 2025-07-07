@@ -17,5 +17,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<bool> AddProductAsync(string userId, ProductCreateInputModel model);
 
         Task<string?> GetCategoryNameByIdAsync(int categoryId);
+
+        Task<EditProductInputModel?> GetProductForEditingAsync(string userId, int? id);
+
+        Task<bool> PersistUpdatedProductAsync(string userId, EditProductInputModel inputModel);
     }
 }

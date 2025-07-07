@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStore.Areas.Admin.Controllers
 {
-    public class AddProductController : AdminBaseController
+    public class ProductController : AdminBaseController
     {
 
         private readonly IProductService productService;
@@ -15,7 +15,7 @@ namespace FoodStore.Areas.Admin.Controllers
         private readonly IBrandService brandService;
         private readonly ISupplierService supplierService;
 
-        public AddProductController(
+        public ProductController(
             IAdminService adminService,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -89,6 +89,54 @@ namespace FoodStore.Areas.Admin.Controllers
 
                 return this.View("ServerError");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            var model = await this.productService.GetProductForEditingAsync(userId, id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            model.Categories = await this.categoryService.GetCategoriesDropDownAsync();
+            model.Brands = await this.brandService.GetBrandsDropDownAsync();
+            model.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditProductInputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                inputModel.Categories = await this.categoryService.GetCategoriesDropDownAsync();
+                inputModel.Brands = await this.brandService.GetBrandsDropDownAsync();
+                inputModel.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
+                return View(inputModel);
+            }
+
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            bool result = await this.productService.PersistUpdatedProductAsync(userId, inputModel);
+            if (!result)
+            {
+                return this.View("ServerError");
+            }
+
+            return RedirectToAction("Details", "Product", new { area = "", id = inputModel.Id });
         }
     }
 }

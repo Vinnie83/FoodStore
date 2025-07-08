@@ -185,5 +185,58 @@ namespace FoodStore.Services.Core
 
             return result;
         }
+
+        public async Task<ProductDeleteInputModel?> GetProductForDeletingAsync(string userId, int? productId)
+        {
+            ProductDeleteInputModel? deleteModel = null;
+
+            if (productId != null)
+            {
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                Product? deleteProductModel = await this.dbContext
+                    .Products
+                    .Include(p => p.Category)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.Id == productId);
+
+                if ((deleteProductModel != null) && (userId.ToLower() == user?.Id.ToLower()))
+                {
+                    deleteModel = new ProductDeleteInputModel()
+                    {
+                        Id = deleteProductModel.Id,
+                        Name = deleteProductModel.Name,
+                        CategoryName = deleteProductModel.Category.Name,
+                        ImageUrl = deleteProductModel.ImageUrl,
+                        Price = deleteProductModel.Price,
+                    };
+                }
+                
+            }
+
+            return deleteModel;
+        }
+
+        public async Task<bool> SoftDeleteProductAsync(string userId, ProductDeleteInputModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Product? deletedProduct = await this.dbContext
+                .Products
+                .FindAsync(inputModel.Id);
+
+            if ((user != null) && (deletedProduct != null)) 
+            {
+                deletedProduct.IsDeleted = true;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
+        }
     }
 }

@@ -4,6 +4,7 @@ using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FoodStore.Areas.Admin.Controllers
 {
@@ -137,6 +138,46 @@ namespace FoodStore.Areas.Admin.Controllers
             }
 
             return RedirectToAction("Details", "Product", new { area = "", id = inputModel.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            var model = await this.productService.GetProductForDeletingAsync(userId, id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(ProductDeleteInputModel inputModel)
+        {
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            bool success = await this.productService.SoftDeleteProductAsync(userId, inputModel);
+
+            if (!success)
+            {
+                return View("Error");
+            }
+
+            string categoryName = inputModel.CategoryName;
+
+            return this.RedirectToAction("Category", "Product", new { area = "", category = categoryName });
         }
     }
 }

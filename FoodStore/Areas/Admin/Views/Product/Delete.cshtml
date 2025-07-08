@@ -1,0 +1,27 @@
+﻿@using FoodStore.ViewModels.Admin
+@model ProductDeleteInputModel
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2 class="text-dark">Confirm Delete</h2>
+
+<div class="alert alert-warning">
+    Are you sure you want to delete the product <strong>@Model.Name</strong>?
+</div>
+
+<div>
+    <form asp-area="Admin" asp-controller="Product" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Name" />
+        <input type="hidden" asp-for="CategoryName" />
+
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a asp-area="Admin"
+           asp-controller="Product"
+           asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

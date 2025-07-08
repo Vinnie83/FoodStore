@@ -21,5 +21,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<EditProductInputModel?> GetProductForEditingAsync(string userId, int? id);
 
         Task<bool> PersistUpdatedProductAsync(string userId, EditProductInputModel inputModel);
+
+        Task<ProductDeleteInputModel?> GetProductForDeletingAsync(string userId, int? productId);
+
+        Task<bool> SoftDeleteProductAsync(string userId, ProductDeleteInputModel inputModel);
     }
 }

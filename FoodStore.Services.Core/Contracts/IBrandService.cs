@@ -14,5 +14,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync();
 
         Task<bool> AddBrandAsync(string userId, AddBrandInputModel inputModel);
+
+        Task<EditBrandInputModel?> GetBrandForEditingAsync(string userId, int? id);
+
+        Task<bool> EditBrandAsync(string userId, EditBrandInputModel inputModel);
     }
 }

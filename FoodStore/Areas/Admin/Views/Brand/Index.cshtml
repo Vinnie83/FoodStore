@@ -20,6 +20,7 @@ else
                     <th scope="col">Id</th>
                     <th scope="col">Brand Name</th>
                     <th scope="col">Country of Origin</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +30,18 @@ else
                         <td>@(brand.index + 1)</td>
                         <td>@brand.value.Name</td>
                         <td>@brand.value.CountryOfOrigin</td>
+                        <td>
+                            <a asp-area="Admin"
+                               asp-controller="Brand"
+                               asp-action="EditBrand"
+                               asp-route-id="@brand.value.Id"
+                               class="btn btn-sm btn-warning me-2">Edit</a>
+                            <a asp-area="Admin"
+                               asp-controller="Brand"
+                               asp-action="Delete"
+                               asp-route-id="@brand.value.Id"
+                               class="btn btn-sm btn-danger">Delete</a>
+                        </td>
                     </tr>
                 }
             </tbody>

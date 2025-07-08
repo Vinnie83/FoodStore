@@ -46,6 +46,7 @@ namespace FoodStore.Services.Core
                 .AsNoTracking()
                 .Select(b => new BrandViewModel()
                 {
+                    Id = b.Id,
                     Name = b.Name,
                     CountryOfOrigin = b.CountryOfOrigin
                 })
@@ -83,6 +84,57 @@ namespace FoodStore.Services.Core
             await dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<EditBrandInputModel?> GetBrandForEditingAsync(string userId, int? id)
+        {
+            EditBrandInputModel? editModel = null;
+
+            if (id != null)
+            {
+                Brand? brand = await this.dbContext
+                    .Brands
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(b => b.Id == id);
+
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                if (brand != null && user != null)
+                {
+                    editModel = new EditBrandInputModel()
+                    {
+                        Id = brand.Id,
+                        Name = brand.Name,
+                        CountryOfOrigin = brand.CountryOfOrigin
+                    };
+                }
+            }
+
+            return editModel;
+        }
+
+        public async Task<bool> EditBrandAsync(string userId, EditBrandInputModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Brand? updatedBrand = await this.dbContext
+                .Brands
+                .FindAsync(inputModel.Id);
+
+            if ((user != null) && 
+                (updatedBrand != null))
+            {
+                updatedBrand.Name = inputModel.Name;
+                updatedBrand.CountryOfOrigin = inputModel.CountryOfOrigin;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
         }
     }
 }

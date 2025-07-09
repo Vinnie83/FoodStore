@@ -14,6 +14,8 @@ namespace FoodStore.Data.Models
 
         public string CountryOfOrigin { get; set; } = null!;
 
+        public bool IsDeleted { get; set; } = false;
+
         public ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

@@ -18,5 +18,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<EditBrandInputModel?> GetBrandForEditingAsync(string userId, int? id);
 
         Task<bool> EditBrandAsync(string userId, EditBrandInputModel inputModel);
+
+        Task<BrandDeleteViewModel?> GetBrandForDeletingAsync(string userId, int? brandId);
+
+        Task<bool> SoftDeleteBrandAsync(string userId, BrandDeleteViewModel inputModel);
     }
 }

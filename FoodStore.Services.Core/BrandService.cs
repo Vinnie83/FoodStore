@@ -44,6 +44,7 @@ namespace FoodStore.Services.Core
             var allBrands = await this.dbContext
                 .Brands
                 .AsNoTracking()
+                .Where(b => !b.IsDeleted)
                 .Select(b => new BrandViewModel()
                 {
                     Id = b.Id,
@@ -128,6 +129,56 @@ namespace FoodStore.Services.Core
             {
                 updatedBrand.Name = inputModel.Name;
                 updatedBrand.CountryOfOrigin = inputModel.CountryOfOrigin;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
+        }
+
+        public async Task<BrandDeleteViewModel?> GetBrandForDeletingAsync(string userId, int? brandId)
+        {
+            BrandDeleteViewModel? deleteModel = null;
+
+            if (brandId != null)
+            {
+                Brand? brand = await this.dbContext
+                    .Brands
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(b => b.Id == brandId);
+
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                if ((user != null) && (brand != null)) 
+                {
+                    deleteModel = new BrandDeleteViewModel()
+                    {
+                        Id = brand.Id,
+                        Name = brand.Name,
+                        CountryOfOrigin = brand.CountryOfOrigin,
+                    };  
+                    
+                }
+            }
+
+            return deleteModel;
+        }
+
+        public async Task<bool> SoftDeleteBrandAsync(string userId, BrandDeleteViewModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Brand? deletedBrand = await this.dbContext
+                .Brands
+                .FindAsync(inputModel.Id);
+
+            if ((user != null) && (deletedBrand != null))
+            {
+                deletedBrand.IsDeleted = true;  
 
                 await this.dbContext.SaveChangesAsync();
 

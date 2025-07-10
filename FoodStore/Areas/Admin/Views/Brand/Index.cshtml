@@ -24,22 +24,22 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var brand in Model.Select((value, index) => new { value, index }))
+                @foreach (var brand in Model)
                 {
                     <tr>
-                        <td>@(brand.index + 1)</td>
-                        <td>@brand.value.Name</td>
-                        <td>@brand.value.CountryOfOrigin</td>
+                        <td>@brand.Id</td>
+                        <td>@brand.Name</td>
+                        <td>@brand.CountryOfOrigin</td>
                         <td>
                             <a asp-area="Admin"
                                asp-controller="Brand"
                                asp-action="EditBrand"
-                               asp-route-id="@brand.value.Id"
+                               asp-route-id="@brand.Id"
                                class="btn btn-sm btn-warning me-2">Edit</a>
                             <a asp-area="Admin"
                                asp-controller="Brand"
                                asp-action="Delete"
-                               asp-route-id="@brand.value.Id"
+                               asp-route-id="@brand.Id"
                                class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>

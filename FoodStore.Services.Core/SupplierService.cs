@@ -46,6 +46,7 @@ namespace FoodStore.Services.Core
                 .AsNoTracking()
                 .Select(s => new SupplierViewModel()
                 {
+                    Id = s.Id,
                     Name = s.Name,
                     Phone = s.Phone,
                     EmailAddress = s.EmailAddress
@@ -87,6 +88,60 @@ namespace FoodStore.Services.Core
             return true;
 
 
+        }
+
+        public async Task<EditSupplierInputModel?> GetSupplierForEditingAsync(string userId, int? id)
+        {
+            EditSupplierInputModel? editModel = null;
+
+            if (id != null)
+            {
+                Supplier? supplier = await this.dbContext
+                    .Suppliers
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(b => b.Id == id);
+
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                if (supplier != null && user != null)
+                {
+                    editModel = new EditSupplierInputModel()
+                    {
+                        Id = supplier.Id,
+                        Name = supplier.Name,
+                        Phone = supplier.Phone,
+                        EmailAddress = supplier.EmailAddress
+                        
+                    };
+                }
+            }
+
+            return editModel;
+        }
+
+        public async Task<bool> EditSupplierAsync(string userId, EditSupplierInputModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Supplier? updatedSupplier = await this.dbContext
+                .Suppliers
+                .FindAsync(inputModel.Id);
+
+            if ((user != null) &&
+                (updatedSupplier != null))
+            {
+                updatedSupplier.Name = inputModel.Name;
+                updatedSupplier.Phone = inputModel.Phone;
+                updatedSupplier.EmailAddress = inputModel.EmailAddress;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
         }
     }
 }

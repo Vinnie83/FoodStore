@@ -21,19 +21,34 @@ else
                     <th scope="col">Supplier Name</th>
                     <th scope="col">Phone</th>
                     <th scope="col">E-mail</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var brand in Model.Select((value, index) => new { value, index }))
+                @foreach (var supplier in Model)
                 {
                     <tr>
-                        <td>@(brand.index + 1)</td>
-                        <td>@brand.value.Name</td>
-                        <td>@brand.value.Phone</td>
-                        <td>@brand.value.EmailAddress</td>
+                        <td>@supplier.Id</td>
+                        <td>@supplier.Name</td>
+                        <td>@supplier.Phone</td>
+                        <td>@supplier.EmailAddress</td>
+                        <td>
+                            <a asp-area="Admin"
+                               asp-controller="Supplier"
+                               asp-action="EditSupplier"
+                               asp-route-id="@supplier.Id"
+                               class="btn btn-sm btn-warning me-2">Edit</a>
+                            <a asp-area="Admin"
+                               asp-controller="Supplier"
+                               asp-action="Delete"
+                               asp-route-id="@supplier.Id"
+                               class="btn btn-sm btn-danger">Delete</a>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 }
+
+

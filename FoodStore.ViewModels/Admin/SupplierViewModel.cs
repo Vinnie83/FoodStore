@@ -8,6 +8,7 @@ namespace FoodStore.ViewModels.Admin
 {
     public class SupplierViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
 
         public string Phone { get; set; } = null!;

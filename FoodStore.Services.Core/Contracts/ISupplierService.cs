@@ -13,5 +13,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync();
 
         Task<bool> AddSupplierAsync(string userId, AddSupplierInputModel inputModel);
+
+        Task<EditSupplierInputModel?> GetSupplierForEditingAsync(string userId, int? id);
+
+        Task<bool> EditSupplierAsync(string userId, EditSupplierInputModel inputModel);
     }
 }

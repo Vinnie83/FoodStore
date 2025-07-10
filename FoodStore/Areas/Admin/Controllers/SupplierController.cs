@@ -60,5 +60,47 @@ namespace FoodStore.Areas.Admin.Controllers
 
             return this.RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditSupplier(int? id)
+        {
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            var model = await this.supplierService.GetSupplierForEditingAsync(userId, id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditSupplier(EditSupplierInputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            bool result = await this.supplierService.EditSupplierAsync(userId, inputModel);
+            if (!result)
+            {
+                return this.View("ServerError");
+            }
+
+            return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+        }
     }
 }

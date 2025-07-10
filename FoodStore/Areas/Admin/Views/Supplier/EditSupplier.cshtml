@@ -1,0 +1,37 @@
+﻿@using FoodStore.ViewModels.Admin
+@model EditSupplierInputModel
+
+@{
+    ViewData["Title"] = "Edit Supplier";
+}
+
+<h2 class="mb-4">Edit Supplier</h2>
+
+<form asp-area="Admin" asp-controller="Supplier" asp-action="EditSupplier" method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Supplier Name</label>
+        <input asp-for="Name" class="form-control" placeholder="Enter supplier name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Phone" class="form-label">Phone</label>
+        <input asp-for="Phone" class="form-control" placeholder="Enter phone" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmailAddress" class="form-label">E-mail</label>
+        <input asp-for="EmailAddress" class="form-control" placeholder="Enter e-mail" />
+        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-area="Admin" asp-controller="Supplier" asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

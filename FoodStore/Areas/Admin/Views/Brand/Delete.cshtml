@@ -16,11 +16,11 @@
     </div>
 </div>
 
-<form asp-action="ConfirmDelete" method="post">
+<form asp-area="Admin" asp-controller="Brand" asp-action="ConfirmDelete" method="post">
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="Name" />
     <input type="hidden" asp-for="CountryOfOrigin" />
 
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <a asp-area="Admin" asp-controller="Brand" asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>

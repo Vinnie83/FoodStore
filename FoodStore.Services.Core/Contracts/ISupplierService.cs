@@ -17,5 +17,9 @@ namespace FoodStore.Services.Core.Contracts
         Task<EditSupplierInputModel?> GetSupplierForEditingAsync(string userId, int? id);
 
         Task<bool> EditSupplierAsync(string userId, EditSupplierInputModel inputModel);
+
+        Task<SupplierDeleteViewModel?> GetSupplierForDeletingAsync(string userId, int? supplierId);
+
+        Task<bool> SoftDeleteSupplierAsync(string userId, SupplierDeleteViewModel inputModel);
     }
 }

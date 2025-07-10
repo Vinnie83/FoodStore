@@ -102,5 +102,47 @@ namespace FoodStore.Areas.Admin.Controllers
 
             return RedirectToAction("Index", "Supplier", new { area = "Admin" });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            var model = await this.supplierService.GetSupplierForDeletingAsync(userId, id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(SupplierDeleteViewModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Delete", inputModel);
+            }
+
+            string? userId = this.userManager.GetUserId(this.User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            bool isDeleted = await this.supplierService.SoftDeleteSupplierAsync(userId, inputModel);
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+
+        }
     }
 }

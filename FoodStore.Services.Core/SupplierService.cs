@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static FoodStore.GCommon.ValidationConstants;
+using Supplier = FoodStore.Data.Models.Supplier;
 
 namespace FoodStore.Services.Core
 {
@@ -44,9 +46,10 @@ namespace FoodStore.Services.Core
             var allSuppliers = await this.dbContext
                 .Suppliers
                 .AsNoTracking()
+                .Where(s => !s.IsDeleted)
                 .Select(s => new SupplierViewModel()
                 {
-                    Id = s.Id,
+                    Id= s.Id,
                     Name = s.Name,
                     Phone = s.Phone,
                     EmailAddress = s.EmailAddress
@@ -135,6 +138,57 @@ namespace FoodStore.Services.Core
                 updatedSupplier.Name = inputModel.Name;
                 updatedSupplier.Phone = inputModel.Phone;
                 updatedSupplier.EmailAddress = inputModel.EmailAddress;
+
+                await this.dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
+        }
+
+        public async Task<SupplierDeleteViewModel?> GetSupplierForDeletingAsync(string userId, int? supplierId)
+        {
+            SupplierDeleteViewModel? deleteModel = null;
+
+            if (supplierId != null)
+            {
+                Supplier? supplier = await this.dbContext
+                .Suppliers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(b => b.Id == supplierId);
+
+                ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+                if ((user != null) && (supplier != null))
+                {
+                    deleteModel = new SupplierDeleteViewModel()
+                    {
+                        Id = supplier.Id,
+                        Name = supplier .Name,
+                        Phone = supplier .Phone,
+                        EmailAddress = supplier .EmailAddress,
+                    };
+
+                }
+            }
+
+            return deleteModel;
+        }
+
+        public async Task<bool> SoftDeleteSupplierAsync(string userId, SupplierDeleteViewModel inputModel)
+        {
+            bool result = false;
+
+            ApplicationUser? user = await this.userManager.FindByIdAsync(userId);
+
+            Supplier? deletedSupplier = await this.dbContext
+                .Suppliers
+                .FindAsync(inputModel.Id);
+
+            if ((user != null) && (deletedSupplier != null))
+            {
+                deletedSupplier.IsDeleted = true;
 
                 await this.dbContext.SaveChangesAsync();
 

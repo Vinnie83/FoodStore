@@ -9,7 +9,7 @@ namespace FoodStore.ViewModels.Admin
     public class OrderReportViewModel
     {
         public int OrderId { get; set; }
-        public DateTime OrderDate { get; set; }
+        public string OrderDate { get; set; } = null!;
         public string ProductName { get; set; } = null!;
         public string Category { get; set; } = null!;
         public string Brand { get; set; } = null!;

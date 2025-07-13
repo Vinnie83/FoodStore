@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using static FoodStore.GCommon.ValidationConstants;
 
 namespace FoodStore.Services.Core
 {
@@ -26,15 +27,16 @@ namespace FoodStore.Services.Core
             var ordersQuery = dbContext.Orders
                 .Include(o => o.User)
                 .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Brand)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Brand)
                 .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Supplier)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Supplier)
                 .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Category)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Category)
                 .AsQueryable();
+
 
             var orderItems = await ordersQuery
                 .SelectMany(o => o.Items.Select(oi => new
@@ -60,7 +62,7 @@ namespace FoodStore.Services.Core
                 .Select(x => new OrderReportViewModel
                 {
                     OrderId = x.Order.Id,
-                    OrderDate = x.Order.OrderDate,
+                    OrderDate = x.Order.OrderDate.ToString(CreatedOnFormat),
                     ProductName = x.Item.Product.Name,
                     Category = x.Item.Product.Category.Name,
                     Brand = x.Item.Product.Brand.Name,
@@ -68,6 +70,8 @@ namespace FoodStore.Services.Core
                     Quantity = x.Item.Quantity,
                     UserEmail = x.Order.User.Email
                 });
+     
         }
+    
     }
 }

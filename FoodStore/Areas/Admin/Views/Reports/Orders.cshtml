@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Orders Report";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <h2 class="mb-4">Orders Report</h2>
@@ -20,6 +21,7 @@
         <option value="supplier">By Supplier</option>
     </select>
 </form>
+
 
 @if (!Model.Any())
 {
@@ -46,7 +48,7 @@ else
             {
                 <tr>
                     <td>@order.OrderId</td>
-                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.OrderDate</td>
                     <td>@order.ProductName</td>
                     <td>@order.Category</td>
                     <td>@order.Brand</td>

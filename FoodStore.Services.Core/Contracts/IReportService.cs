@@ -9,6 +9,6 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IReportService
     {
-        Task<IEnumerable<OrderReportViewModel>> GetOrderReportsAsync(string? filter);
+        Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter);
     }
 }

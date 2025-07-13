@@ -1,5 +1,5 @@
 ﻿@using FoodStore.ViewModels.Admin
-@model IEnumerable<OrderReportViewModel>
+@model OrdersReportPageViewModel
 @{
     ViewData["Title"] = "Orders Report";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,20 +10,51 @@
 
 <form method="get" class="mb-4">
     <label for="filter">Filter by:</label>
-    <select name="filter" id="filter" onchange="this.form.submit()">
-        <option value="">-- Select --</option>
-        <option value="order_id">By Id</option>
-        <option value="date_asc">Date Ascending</option>
-        <option value="date_desc">Date Descending</option>
-        <option value="product">By Product</option>
-        <option value="category">By Category</option>
-        <option value="brand">By Brand</option>
-        <option value="supplier">By Supplier</option>
+    <select name="filter" id="filter" class="form-select" onchange="this.form.submit()">
+        <option value="">-- Select Filter or Sort --</option>
+
+        <optgroup label="Sort Options">
+            <option value="order_id">Order ID</option>
+            <option value="date_asc">Date Ascending</option>
+            <option value="date_desc">Date Descending</option>
+            <option value="product">Product Name</option>
+            <option value="category_sort">Category Name</option>
+            <option value="brand_sort">Brand Name</option>
+            <option value="supplier_sort">Supplier Name</option>
+        </optgroup>
+
+        <optgroup label="Filter by User">
+            @foreach (var email in Model.UserEmails)
+            {
+                <option value="user:@email">@email</option>
+            }
+        </optgroup>
+
+        <optgroup label="Filter by Supplier">
+            @foreach (var supplier in Model.Suppliers)
+            {
+                <option value="supplier:@supplier">@supplier</option>
+            }
+        </optgroup>
+
+        <optgroup label="Filter by Brand">
+            @foreach (var brand in Model.Brands)
+            {
+                <option value="brand:@brand">@brand</option>
+            }
+        </optgroup>
+
+        <optgroup label="Filter by Category">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="category:@category">@category</option>
+            }
+        </optgroup>
     </select>
 </form>
 
 
-@if (!Model.Any())
+@if (!Model.Reports.Any())
 {
     <div class="alert alert-warning">No orders recorded.</div>
 }
@@ -44,7 +75,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var order in Model)
+            @foreach (var order in Model.Reports)
             {
                 <tr>
                     <td>@order.OrderId</td>

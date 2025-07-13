@@ -24,16 +24,17 @@ namespace FoodStore.Services.Core
         public async Task<IEnumerable<OrderReportViewModel>> GetOrderReportsAsync(string? filter)
         {
             var ordersQuery = dbContext.Orders
-        .Include(o => o.Items)
-            .ThenInclude(oi => oi.Product)
+                .Include(o => o.User)
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
                 .ThenInclude(p => p.Brand)
-        .Include(o => o.Items)
-            .ThenInclude(oi => oi.Product)
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
                 .ThenInclude(p => p.Supplier)
-        .Include(o => o.Items)
-            .ThenInclude(oi => oi.Product)
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
                 .ThenInclude(p => p.Category)
-        .AsQueryable();
+                .AsQueryable();
 
             var orderItems = await ordersQuery
                 .SelectMany(o => o.Items.Select(oi => new
@@ -43,7 +44,6 @@ namespace FoodStore.Services.Core
                 }))
                 .ToListAsync();
 
-            // Apply ordering in-memory because navigation properties cannot be translated by EF Core in OrderBy
             orderItems = filter switch
             {
                 "order_id" => orderItems.OrderBy(o => o.Order.Id).ToList(),
@@ -65,7 +65,8 @@ namespace FoodStore.Services.Core
                     Category = x.Item.Product.Category.Name,
                     Brand = x.Item.Product.Brand.Name,
                     Supplier = x.Item.Product.Supplier.Name,
-                    Quantity = x.Item.Quantity
+                    Quantity = x.Item.Quantity,
+                    UserEmail = x.Order.User.Email
                 });
         }
     }

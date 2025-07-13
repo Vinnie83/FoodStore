@@ -8,7 +8,7 @@ namespace FoodStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class AdminBaseController : Controller
+    public abstract class AdminBaseController : Controller
     {
         protected readonly IAdminService adminService;
         protected readonly UserManager<ApplicationUser> userManager;

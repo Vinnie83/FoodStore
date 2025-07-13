@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace FoodStore.Controllers
 {
-    public class BaseController : Controller
+    public abstract class BaseController : Controller
     {
         protected bool IsUserAuthenticated()
         {

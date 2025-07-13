@@ -15,5 +15,7 @@ namespace FoodStore.ViewModels.Admin
         public string Brand { get; set; } = null!;
         public string Supplier { get; set; } = null!;
         public int Quantity { get; set; }
+
+        public string UserEmail { get; set; } = null!;
     }
 }

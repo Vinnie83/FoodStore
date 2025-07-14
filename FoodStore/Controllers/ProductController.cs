@@ -21,7 +21,7 @@ namespace FoodStore.Controllers
             {
                 if (string.IsNullOrWhiteSpace(category))
                 {
-                    return NotFound();
+                    return RedirectToAction("NotFoundPage", "Error");
                 }
 
                 var products = await productService.GetByCategoryAsync(category);
@@ -49,7 +49,7 @@ namespace FoodStore.Controllers
 
                 if (product == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("NotFoundPage", "Error");
                 }
 
                 return View(product);
@@ -59,5 +59,6 @@ namespace FoodStore.Controllers
                 return RedirectToAction("ServerError", "Error");
             }
         }
+
     }
 }

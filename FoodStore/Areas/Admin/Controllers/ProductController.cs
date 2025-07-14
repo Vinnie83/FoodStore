@@ -84,100 +84,134 @@ namespace FoodStore.Areas.Admin.Controllers
 
                 return this.RedirectToAction("Category", "Product", new { area = "", category = categoryName });
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e);
-
-                return this.View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
 
-            var model = await this.productService.GetProductForEditingAsync(userId, id);
-            if (model == null)
+                var model = await this.productService.GetProductForEditingAsync(userId, id);
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                model.Categories = await this.categoryService.GetCategoriesDropDownAsync();
+                model.Brands = await this.brandService.GetBrandsDropDownAsync();
+                model.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
+
+                return RedirectToAction("ServerError", "Error");
             }
-
-            model.Categories = await this.categoryService.GetCategoriesDropDownAsync();
-            model.Brands = await this.brandService.GetBrandsDropDownAsync();
-            model.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
-
-            return View(model);
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditProductInputModel inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                inputModel.Categories = await this.categoryService.GetCategoriesDropDownAsync();
-                inputModel.Brands = await this.brandService.GetBrandsDropDownAsync();
-                inputModel.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
-                return View(inputModel);
-            }
+                if (!ModelState.IsValid)
+                {
+                    inputModel.Categories = await this.categoryService.GetCategoriesDropDownAsync();
+                    inputModel.Brands = await this.brandService.GetBrandsDropDownAsync();
+                    inputModel.Suppliers = await this.supplierService.GetSuppliersDropDownAsync();
+                    return View(inputModel);
+                }
 
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool result = await this.productService.PersistUpdatedProductAsync(userId, inputModel);
+                if (!result)
+                {
+                    return RedirectToAction("ServerError", "Error");
+                }
+
+                return RedirectToAction("Details", "Product", new { area = "", id = inputModel.Id });
+            }
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
 
-            bool result = await this.productService.PersistUpdatedProductAsync(userId, inputModel);
-            if (!result)
-            {
-                return this.View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
-
-            return RedirectToAction("Details", "Product", new { area = "", id = inputModel.Id });
+           
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                var model = await this.productService.GetProductForDeletingAsync(userId, id);
+
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return View(model);
             }
-
-            var model = await this.productService.GetProductForDeletingAsync(userId, id);
-
-            if (model == null)
+            catch (Exception)
             {
-                return NotFound();
-            }
 
-            return View(model);
+                return RedirectToAction("ServerError", "Error");
+            }
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(ProductDeleteInputModel inputModel)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool success = await this.productService.SoftDeleteProductAsync(userId, inputModel);
+
+                if (!success)
+                {
+                    return View("Error");
+                }
+
+                string categoryName = inputModel.CategoryName;
+
+                return this.RedirectToAction("Category", "Product", new { area = "", category = categoryName });
             }
-
-            bool success = await this.productService.SoftDeleteProductAsync(userId, inputModel);
-
-            if (!success)
+            catch (Exception)
             {
-                return View("Error");
+
+                return RedirectToAction("ServerError", "Error");
             }
-
-            string categoryName = inputModel.CategoryName;
-
-            return this.RedirectToAction("Category", "Product", new { area = "", category = categoryName });
+            
         }
     }
 }

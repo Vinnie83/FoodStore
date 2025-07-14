@@ -39,113 +39,158 @@ namespace FoodStore.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBrand(AddBrandInputModel inputModel)
         {
-            if(!this.ModelState.IsValid)
+            try
             {
-                Console.WriteLine("ModelState is INVALID!");
+                if (!this.ModelState.IsValid)
+                {
+                    Console.WriteLine("ModelState is INVALID!");
 
-                return this.View(inputModel);
-                
+                    return this.View(inputModel);
+
+                }
+
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool addResult = await this.brandService.AddBrandAsync(userId, inputModel);
+
+                if (!addResult)
+                {
+
+                    ModelState.AddModelError(string.Empty, "Fatal error occurred while adding a brand");
+                    return this.View(inputModel);
+                }
+
+                return this.RedirectToAction("Index");
             }
-
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
+
+                return RedirectToAction("ServerError", "Error");
             }
-
-            bool addResult = await this.brandService.AddBrandAsync(userId, inputModel);
-
-            if (!addResult)
-            {
-
-                ModelState.AddModelError(string.Empty, "Fatal error occurred while adding a brand");
-                return this.View(inputModel);
-            }
-
-            return this.RedirectToAction("Index");
+           
         }
 
         [HttpGet]
         public async Task<IActionResult> EditBrand(int? id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
 
-            var model = await this.brandService.GetBrandForEditingAsync(userId, id);
-            if (model == null)
+                var model = await this.brandService.GetBrandForEditingAsync(userId, id);
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
-            }
 
-            return View(model);
+                return RedirectToAction("ServerError", "Error");
+            }
+            
 
         }
 
         [HttpPost]
         public async Task<IActionResult> EditBrand(EditBrandInputModel inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(inputModel);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View(inputModel);
+                }
 
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool result = await this.brandService.EditBrandAsync(userId, inputModel);
+                if (!result)
+                {
+                    return RedirectToAction("ServerError", "Error");
+                }
+
+                return RedirectToAction("Index", "Brand", new { area = "Admin" });
+            }
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
 
-            bool result = await this.brandService.EditBrandAsync(userId, inputModel);
-            if (!result)
-            {
-                return this.View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
-
-            return RedirectToAction("Index", "Brand", new { area = "Admin" });
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
 
-            var model = await this.brandService.GetBrandForDeletingAsync(userId, id);
-            if (model == null)
+                var model = await this.brandService.GetBrandForDeletingAsync(userId, id);
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
-            }
 
-            return View(model);
+                return RedirectToAction("ServerError", "Error");
+            }
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> ConfirmDelete(BrandDeleteViewModel inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View("Delete", inputModel); 
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View("Delete", inputModel);
+                }
 
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool isDeleted = await this.brandService.SoftDeleteBrandAsync(userId, inputModel);
+                if (!isDeleted)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return RedirectToAction("Index", "Brand", new { area = "Admin" });
+            }
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
 
-            bool isDeleted = await this.brandService.SoftDeleteBrandAsync(userId, inputModel);
-            if (!isDeleted)
-            {
-                return NotFound();
+                return RedirectToAction("ServerError", "Error");
             }
-
-            return RedirectToAction("Index", "Brand", new { area = "Admin" });
+            
 
         }
     }

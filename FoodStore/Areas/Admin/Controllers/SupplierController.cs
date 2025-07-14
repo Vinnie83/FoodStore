@@ -35,113 +35,158 @@ namespace FoodStore.Areas.Admin.Controllers
 
         public async Task<IActionResult> AddSupplier(AddSupplierInputModel inputModel)
         {
-            if (!this.ModelState.IsValid)
+            try
             {
-                Console.WriteLine("ModelState is INVALID!");
+                if (!this.ModelState.IsValid)
+                {
+                    Console.WriteLine("ModelState is INVALID!");
 
-                return this.View(inputModel);
+                    return this.View(inputModel);
 
+                }
+
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool addResult = await this.supplierService.AddSupplierAsync(userId, inputModel);
+
+                if (!addResult)
+                {
+
+                    ModelState.AddModelError(string.Empty, "Fatal error occurred while adding a supplier");
+                    return this.View(inputModel);
+                }
+
+                return this.RedirectToAction("Index");
             }
-
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
+
+                return RedirectToAction("ServerError", "Error");
             }
-
-            bool addResult = await this.supplierService.AddSupplierAsync(userId, inputModel);
-
-            if (!addResult)
-            {
-
-                ModelState.AddModelError(string.Empty, "Fatal error occurred while adding a supplier");
-                return this.View(inputModel);
-            }
-
-            return this.RedirectToAction("Index");
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> EditSupplier(int? id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
 
-            var model = await this.supplierService.GetSupplierForEditingAsync(userId, id);
-            if (model == null)
+                var model = await this.supplierService.GetSupplierForEditingAsync(userId, id);
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error"); ;
+                }
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
-            }
 
-            return View(model);
+                return RedirectToAction("ServerError", "Error");
+            }
+            
 
         }
 
         [HttpPost]
         public async Task<IActionResult> EditSupplier(EditSupplierInputModel inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(inputModel);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View(inputModel);
+                }
 
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool result = await this.supplierService.EditSupplierAsync(userId, inputModel);
+                if (!result)
+                {
+                    return RedirectToAction("ServerError", "Error");
+                }
+
+                return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+            }
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
 
-            bool result = await this.supplierService.EditSupplierAsync(userId, inputModel);
-            if (!result)
-            {
-                return this.View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
-
-            return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+            try
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
 
-            var model = await this.supplierService.GetSupplierForDeletingAsync(userId, id);
-            if (model == null)
+                var model = await this.supplierService.GetSupplierForDeletingAsync(userId, id);
+                if (model == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
-            }
 
-            return View(model);
+                return RedirectToAction("ServerError", "Error");
+            }
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> ConfirmDelete(SupplierDeleteViewModel inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View("Delete", inputModel);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View("Delete", inputModel);
+                }
 
-            string? userId = this.userManager.GetUserId(this.User);
-            if (userId == null)
+                string? userId = this.userManager.GetUserId(this.User);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+
+                bool isDeleted = await this.supplierService.SoftDeleteSupplierAsync(userId, inputModel);
+                if (!isDeleted)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+
+                return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+            }
+            catch (Exception)
             {
-                return RedirectToAction("Login", "Account", new { area = "" });
-            }
 
-            bool isDeleted = await this.supplierService.SoftDeleteSupplierAsync(userId, inputModel);
-            if (!isDeleted)
-            {
-                return NotFound();
+                return RedirectToAction("ServerError", "Error");
             }
-
-            return RedirectToAction("Index", "Supplier", new { area = "Admin" });
+            
 
         }
     }

@@ -36,7 +36,7 @@ namespace FoodStore.Areas.Admin.Controllers
             catch (Exception)
             {
 
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
             
 
@@ -51,14 +51,14 @@ namespace FoodStore.Areas.Admin.Controllers
 
                 if (details == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("NotFoundPage", "Error");
                 }
 
                 return View(details); 
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -74,7 +74,7 @@ namespace FoodStore.Areas.Admin.Controllers
             }
             catch
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
     }

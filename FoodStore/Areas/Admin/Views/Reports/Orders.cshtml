@@ -66,12 +66,9 @@ else
             <tr>
                 <th>Order ID</th>
                 <th>Date</th>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Supplier</th>
-                <th>Quantity</th>
+                <th>Total Price</th>
                 <th>User Email</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -80,12 +77,13 @@ else
                 <tr>
                     <td>@order.OrderId</td>
                     <td>@order.OrderDate</td>
-                    <td>@order.ProductName</td>
-                    <td>@order.Category</td>
-                    <td>@order.Brand</td>
-                    <td>@order.Supplier</td>
-                    <td>@order.Quantity</td>
+                    <td>@($"{order.TotalPrice:F2} lv.")</td>
                     <td>@order.UserEmail</td>
+                        <td>
+                            <a href="@Url.Action("OrderDetails", "Reports", new { area = "Admin", id = order.OrderId })" class="btn btn-sm btn-info">
+                                View Details
+                            </a>
+                        </td>
                 </tr>
             }
         </tbody>

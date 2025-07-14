@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace FoodStore.ViewModels.Admin
 {
-    public class OrderReportViewModel
+    public class OrderDetailsViewModel
     {
         public int OrderId { get; set; }
 
         public string OrderDate { get; set; } = null!;
 
-        public decimal TotalPrice { get; set; }
-
         public string UserEmail { get; set; } = null!;
+
+        public List<OrderItemViewModel> Items { get; set; } = new();
+
+        public decimal TotalPrice { get; set; }
     }
 }

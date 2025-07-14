@@ -42,5 +42,24 @@ namespace FoodStore.Areas.Admin.Controllers
 
             
         }
+
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            try
+            {
+                var details = await reportService.GetOrderDetailsAsync(id);
+
+                if (details == null)
+                {
+                    return NotFound();
+                }
+
+                return View(details); 
+            }
+            catch (Exception)
+            {
+                return View("ServerError");
+            }
+        }
     }
 }

@@ -1,0 +1,49 @@
+﻿@using FoodStore.ViewModels.Admin
+@model OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = $"Order #{Model.OrderId} Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Order #@Model.OrderId</h2>
+
+<p><strong>Date:</strong> @Model.OrderDate</p>
+<p><strong>User Email:</strong> @Model.UserEmail</p>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Supplier</th>
+            <th>Quantity</th>
+            <th>Unit Price (lv)</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.Category</td>
+                <td>@item.Brand</td>
+                <td>@item.Supplier</td>
+                <td>@item.Quantity</td>
+                <td>@($"{item.Price:F2} lv")</td>
+                <td>@($"{item.TotalItemPrice:F2} lv")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr class="table-info">
+            <td colspan="6" class="text-end"><strong>Total Price:</strong></td>
+            <td><strong>@($"{Model.TotalPrice:F2} lv")</strong></td>
+        </tr>
+    </tfoot>
+</table>
+
+<a href="@Url.Action("Orders", "Reports", new { area = "Admin" })" class="btn btn-secondary">Back to Reports</a>
+

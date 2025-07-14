@@ -2,12 +2,7 @@
 using FoodStore.Data;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels.Admin;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 using static FoodStore.GCommon.ValidationConstants;
 
@@ -21,6 +16,7 @@ namespace FoodStore.Services.Core
         {
             this.dbContext = dbContext;
         }
+
 
         public async Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter)
         {
@@ -37,7 +33,6 @@ namespace FoodStore.Services.Core
                         .ThenInclude(p => p.Category)
                 .AsQueryable();
 
-
             string? filterType = null;
             string? filterValue = null;
 
@@ -48,52 +43,37 @@ namespace FoodStore.Services.Core
                 filterValue = parts[1].Trim().ToLower();
             }
 
-            var orderItems = await ordersQuery
-                .SelectMany(o => o.Items.Select(oi => new
+            var ordersList = await ordersQuery
+                .Where(o =>
+                    filterType == null ||
+                    (filterType == "user" && o.User != null && o.User.Email.ToLower() == filterValue) ||
+                    (filterType == "supplier" && o.Items.Any(i => i.Product.Supplier != null && i.Product.Supplier.Name.ToLower() == filterValue)) ||
+                    (filterType == "brand" && o.Items.Any(i => i.Product.Brand != null && i.Product.Brand.Name.ToLower() == filterValue)) ||
+                    (filterType == "category" && o.Items.Any(i => i.Product.Category != null && i.Product.Category.Name.ToLower() == filterValue))
+                )
+                .Select(o => new
                 {
                     Order = o,
-                    Item = oi,
-                    Product = oi.Product,
-                    SupplierName = oi.Product.Supplier != null ? oi.Product.Supplier.Name : null,
-                    BrandName = oi.Product.Brand != null ? oi.Product.Brand.Name : null,
-                    CategoryName = oi.Product.Category != null ? oi.Product.Category.Name : null,
-                    UserEmail = o.User != null ? o.User.Email : null
-                }))
-                .Where(x =>
-                    filterType == null ||
-                    (filterType == "user" && x.UserEmail != null && x.UserEmail.ToLower() == filterValue) ||
-                    (filterType == "supplier" && x.SupplierName != null && x.SupplierName.ToLower() == filterValue) ||
-                    (filterType == "brand" && x.BrandName != null && x.BrandName.ToLower() == filterValue) ||
-                    (filterType == "category" && x.CategoryName != null && x.CategoryName.ToLower() == filterValue)
-                )
+                    TotalPrice = o.Items.Sum(i => i.Quantity * i.Product.Price)
+                })
+                .Where(x => x.TotalPrice > 0)
                 .ToListAsync();
 
-
-            orderItems = filter switch
+            ordersList = filter switch
             {
-                "order_id" => orderItems.OrderBy(x => x.Order.Id).ToList(),
-                "date_asc" => orderItems.OrderBy(x => x.Order.OrderDate).ToList(),
-                "date_desc" => orderItems.OrderByDescending(x => x.Order.OrderDate).ToList(),
-                "product" => orderItems.OrderBy(x => x.Item.Product.Name).ToList(),
-                "category_sort" => orderItems.OrderBy(x => x.Item.Product.Category.Name).ToList(),
-                "brand_sort" => orderItems.OrderBy(x => x.Item.Product.Brand.Name).ToList(),
-                "supplier_sort" => orderItems.OrderBy(x => x.Item.Product.Supplier.Name).ToList(),
-                _ => orderItems
+                "order_id" => ordersList.OrderBy(x => x.Order.Id).ToList(),
+                "date_asc" => ordersList.OrderBy(x => x.Order.OrderDate).ToList(),
+                "date_desc" => ordersList.OrderByDescending(x => x.Order.OrderDate).ToList(),
+                _ => ordersList
             };
 
-            var reportData = orderItems
-                .Select(x => new OrderReportViewModel
-                {
-                    OrderId = x.Order.Id,
-                    OrderDate = x.Order.OrderDate.ToString(CreatedOnFormat),
-                    ProductName = x.Item.Product.Name,
-                    Category = x.Item.Product.Category.Name,
-                    Brand = x.Item.Product.Brand.Name,
-                    Supplier = x.Item.Product.Supplier.Name,
-                    Quantity = x.Item.Quantity,
-                    UserEmail = x.Order.User.Email
-                })
-                .ToList();
+            var reportData = ordersList.Select(x => new OrderReportViewModel
+            {
+                OrderId = x.Order.Id,
+                OrderDate = x.Order.OrderDate.ToString(CreatedOnFormat),
+                UserEmail = x.Order.User.Email,
+                TotalPrice = x.TotalPrice
+            }).ToList();
 
             return new OrdersReportPageViewModel
             {
@@ -103,8 +83,46 @@ namespace FoodStore.Services.Core
                 Brands = await dbContext.Brands.Select(b => b.Name).Distinct().ToListAsync(),
                 Categories = await dbContext.Categories.Select(c => c.Name).Distinct().ToListAsync()
             };
-
         }
-    
+
+        public async Task<OrderDetailsViewModel?> GetOrderDetailsAsync(int orderId)
+        {
+            var order = await dbContext.Orders
+            .Include(o => o.User)
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .ThenInclude(p => p.Brand)
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .ThenInclude(p => p.Supplier)
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .ThenInclude(p => p.Category)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return null;
+
+            var viewModel = new OrderDetailsViewModel
+            {
+                OrderId = order.Id,
+                OrderDate = order.OrderDate.ToString(CreatedOnFormat),
+                UserEmail = order.User?.Email ?? "Unknown",
+                TotalPrice = order.Items.Sum(i => i.Product.Price * i.Quantity),
+                Items = order.Items.Select(i => new OrderItemViewModel
+                {
+                    ProductName = i.Product.Name,
+                    Category = i.Product.Category.Name,
+                    Brand = i.Product.Brand.Name,
+                    Supplier = i.Product.Supplier.Name,
+                    Quantity = i.Quantity,
+                    Price = i.Product.Price
+                }).ToList()
+            };
+
+            return viewModel;
+        }
+
+
     }
 }

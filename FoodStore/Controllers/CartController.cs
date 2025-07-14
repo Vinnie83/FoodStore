@@ -34,7 +34,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError"); // Custom 500
+                return RedirectToAction("ServerError", "Error");
             }
 
         }
@@ -57,7 +57,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -77,7 +77,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -97,7 +97,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -118,7 +118,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
 
         }
@@ -148,7 +148,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -171,7 +171,7 @@ namespace FoodStore.Controllers
             }
             catch
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
     }

@@ -33,7 +33,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -53,7 +53,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
 
@@ -73,7 +73,7 @@ namespace FoodStore.Controllers
             }
             catch (Exception)
             {
-                return View("ServerError");
+                return RedirectToAction("ServerError", "Error");
             }
         }
     }

@@ -61,5 +61,21 @@ namespace FoodStore.Areas.Admin.Controllers
                 return View("ServerError");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel(string? filter)
+        {
+            try
+            {
+                var excelBytes = await reportService.ExportOrdersToExcelAsync(filter);
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "OrdersReport.xlsx");
+            }
+            catch
+            {
+                return View("ServerError");
+            }
+        }
     }
 }

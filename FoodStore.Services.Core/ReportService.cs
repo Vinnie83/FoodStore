@@ -3,8 +3,15 @@ using FoodStore.Data;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels.Admin;
 
+
 using Microsoft.EntityFrameworkCore;
 using static FoodStore.GCommon.ValidationConstants;
+using System.ComponentModel;
+using System.Drawing;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+
 
 namespace FoodStore.Services.Core
 {
@@ -23,14 +30,15 @@ namespace FoodStore.Services.Core
             var ordersQuery = dbContext.Orders
                 .Include(o => o.User)
                 .Include(o => o.Items)
-                    .ThenInclude(oi => oi.Product)
-                        .ThenInclude(p => p.Brand)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(p => p.Brand)
                 .Include(o => o.Items)
-                    .ThenInclude(oi => oi.Product)
-                        .ThenInclude(p => p.Supplier)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(p => p.Supplier)
                 .Include(o => o.Items)
-                    .ThenInclude(oi => oi.Product)
-                        .ThenInclude(p => p.Category)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(p => p.Category)
+                .AsNoTracking()
                 .AsQueryable();
 
             string? filterType = null;
@@ -45,6 +53,7 @@ namespace FoodStore.Services.Core
 
             var ordersList = await ordersQuery
                 .Where(o =>
+                    o.Items.Any(i => i.Quantity > 0 && i.Product.Price > 0) &&
                     filterType == null ||
                     (filterType == "user" && o.User != null && o.User.Email.ToLower() == filterValue) ||
                     (filterType == "supplier" && o.Items.Any(i => i.Product.Supplier != null && i.Product.Supplier.Name.ToLower() == filterValue)) ||
@@ -98,6 +107,7 @@ namespace FoodStore.Services.Core
             .Include(o => o.Items)
             .ThenInclude(i => i.Product)
             .ThenInclude(p => p.Category)
+            .AsNoTracking()
             .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
@@ -123,6 +133,36 @@ namespace FoodStore.Services.Core
             return viewModel;
         }
 
+        public async Task<byte[]> ExportOrdersToExcelAsync(string? filter)
+        {
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
+
+            var report = await GetOrderReportsAsync(filter);
+
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Orders");
+
+            // Add header row
+            worksheet.Cells[1, 1].Value = "Order ID";
+            worksheet.Cells[1, 2].Value = "Date";
+            worksheet.Cells[1, 3].Value = "User Email";
+            worksheet.Cells[1, 4].Value = "Total Price (lv)";
+
+            int row = 2;
+            foreach (var order in report.Reports)
+            {
+                worksheet.Cells[row, 1].Value = order.OrderId;
+                worksheet.Cells[row, 2].Value = order.OrderDate;
+                worksheet.Cells[row, 3].Value = order.UserEmail;
+                worksheet.Cells[row, 4].Value = order.TotalPrice;
+                row++;
+            }
+
+            // Optional: Auto-fit columns
+            worksheet.Cells.AutoFitColumns();
+
+            return await package.GetAsByteArrayAsync();
+        }
     }
 }

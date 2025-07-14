@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FoodStore.Data.Models\FoodStore.Data.Models.csproj" />
     <ProjectReference Include="..\FoodStore.Data\FoodStore.Data.csproj" />
     <ProjectReference Include="..\FoodStore.ViewModels\FoodStore.ViewModels.csproj" />

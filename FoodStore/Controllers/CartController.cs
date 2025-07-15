@@ -142,8 +142,6 @@ namespace FoodStore.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await cartService.ClearCartAsync(userId);
-
                 return RedirectToAction("ThankYou");
             }
             catch (Exception)

@@ -31,6 +31,7 @@ namespace FoodStore.Services.Core
                 {
                     UserId = userId,
                     OrderStatus = OrderStatus.Pending,
+                    PaymentStatus = PaymentStatus.Pending,
                     OrderDate = DateTime.UtcNow,
                 };
 
@@ -150,7 +151,7 @@ namespace FoodStore.Services.Core
         {
             var orders = await this.dbContext
                 .Orders
-                .Where(o => o.UserId == userId && o.OrderStatus != OrderStatus.Pending)
+                .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.OrderDate)
                 .Select(o => new OrderHistoryViewModel()
                 {

@@ -11,6 +11,7 @@ using System.Drawing;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using FoodStore.Data.Models.Enums;
 
 
 namespace FoodStore.Services.Core
@@ -28,6 +29,7 @@ namespace FoodStore.Services.Core
         public async Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter)
         {
             var ordersQuery = dbContext.Orders
+                .Where(o => o.OrderStatus != OrderStatus.Pending)
                 .Include(o => o.User)
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
@@ -41,8 +43,10 @@ namespace FoodStore.Services.Core
                 .AsNoTracking()
                 .AsQueryable();
 
+            bool includePending = false;
             string? filterType = null;
             string? filterValue = null;
+
 
             if (!string.IsNullOrEmpty(filter) && filter.Contains(":"))
             {
@@ -143,7 +147,6 @@ namespace FoodStore.Services.Core
             using var package = new ExcelPackage();
             var worksheet = package.Workbook.Worksheets.Add("Orders");
 
-            // Add header row
             worksheet.Cells[1, 1].Value = "Order ID";
             worksheet.Cells[1, 2].Value = "Date";
             worksheet.Cells[1, 3].Value = "User Email";
@@ -159,7 +162,6 @@ namespace FoodStore.Services.Core
                 row++;
             }
 
-            // Optional: Auto-fit columns
             worksheet.Cells.AutoFitColumns();
 
             return await package.GetAsByteArrayAsync();

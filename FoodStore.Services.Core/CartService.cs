@@ -4,6 +4,7 @@ using FoodStore.Data.Models.Enums;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using static FoodStore.GCommon.ValidationConstants;
 
 namespace FoodStore.Services.Core
 {
@@ -14,39 +15,40 @@ namespace FoodStore.Services.Core
 
         public CartService(FoodStoreDbContext dbContext)
         {
-            this.dbContext = dbContext;       
+            this.dbContext = dbContext;
         }
 
-        public async Task<Order> GetOrCreateCartAsync(string userId)
+        public async Task<Order?> GetActiveCartAsync(string userId)
         {
-            var cart = await this.dbContext
-                .Orders
-                .Include(o => o.Items)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == OrderStatus.Pending);
-                
-            if (cart == null)
-            {
-                cart = new Order()
-                {
-                    UserId = userId,
-                    OrderStatus = OrderStatus.Pending,
-                    PaymentStatus = PaymentStatus.Pending,
-                    OrderDate = DateTime.UtcNow,
-                };
+            return await this.dbContext
+            .Orders
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .FirstOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == OrderStatus.Pending);
 
-                dbContext.Orders.Add(cart);
-                await dbContext.SaveChangesAsync();
-            }
+        }
+
+        public async Task<Order> CreateCartAsync(string userId)
+        {
+            var cart = new Order
+            {
+                UserId = userId,
+                OrderStatus = OrderStatus.Pending,
+                PaymentStatus = PaymentStatus.Pending,
+                OrderDate = DateTime.UtcNow,
+            };
+
+            dbContext.Orders.Add(cart);
+            await dbContext.SaveChangesAsync();
 
             return cart;
-
         }
+
         public async Task AddToCartAsync(string userId, int productId, int quantity)
         {
-            var cart = await GetOrCreateCartAsync(userId);
+            var cart = await GetActiveCartAsync(userId) ?? await CreateCartAsync(userId);
 
-            var existingItem = cart.Items.FirstOrDefault(i =>  i.ProductId == productId);
+            var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
 
             if (existingItem != null)
             {
@@ -71,7 +73,12 @@ namespace FoodStore.Services.Core
 
         public async Task<List<CartItemViewModel>> GetCartItemsAsync(string userId)
         {
-            var cart = await GetOrCreateCartAsync(userId);
+            var cart = await GetActiveCartAsync(userId);
+
+            if (cart == null)
+            {
+                return new List<CartItemViewModel>();
+            }
 
             return cart.Items.Select(i => new CartItemViewModel
             {
@@ -95,27 +102,26 @@ namespace FoodStore.Services.Core
 
             if (item != null)
             {
-                dbContext.OrderItems.Remove(item); 
+                dbContext.OrderItems.Remove(item);
                 await dbContext.SaveChangesAsync();
             }
         }
 
         public async Task ClearCartAsync(string userId)
         {
-            var cart = await GetOrCreateCartAsync(userId);
+            var cart = await GetActiveCartAsync(userId);
 
-            var itemsToRemove = cart.Items.ToList();
+            if (cart == null) return;
 
-            dbContext.OrderItems.RemoveRange(itemsToRemove);
+            dbContext.OrderItems.RemoveRange(cart.Items);
 
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> CheckoutAsync(string userId)
         {
-            var cart = await GetOrCreateCartAsync(userId);
-
-            if (!cart.Items.Any())
+            var cart = await GetActiveCartAsync(userId);
+            if (cart == null || !cart.Items.Any())
             {
                 return false;
             }
@@ -137,7 +143,6 @@ namespace FoodStore.Services.Core
                 product.Quantity -= item.Quantity;
             }
 
-
             cart.OrderStatus = OrderStatus.Processed;
             cart.OrderDate = DateTime.UtcNow;
             cart.TotalAmount = cart.Items.Sum(i => i.Price * i.Quantity);
@@ -156,8 +161,8 @@ namespace FoodStore.Services.Core
                 .Select(o => new OrderHistoryViewModel()
                 {
                     OrderId = o.Id,
-                    OrderDate = o.OrderDate,
-                    TotalAmount = o.TotalAmount,
+                    OrderDate = o.OrderDate.ToString(CreatedOnFormat),
+                    TotalAmount = o.Items.Sum(i => i.Product.Price * i.Quantity),
                     OrderStatus = o.OrderStatus.ToString(),
                     PaymentStatus = o.PaymentStatus.ToString()
 
@@ -166,5 +171,56 @@ namespace FoodStore.Services.Core
 
             return orders;
         }
-    }
+
+        public async Task<bool> CancelOrderAsync(string userId, int orderId)
+        {
+            bool result = false;
+
+            var order = await dbContext.Orders
+               .FirstOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == OrderStatus.Pending
+               && o.Id == orderId);
+
+
+            if (order != null)
+            {
+                order.OrderStatus = OrderStatus.Cancelled;
+                await dbContext.SaveChangesAsync();
+
+                result = true;
+            }
+
+            return result;
+        }
+
+        public async Task<Order?> GetByIdAsync(int orderId)
+        {
+            return await dbContext.Orders
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+        }
+
+        public async Task<CancelOrderViewModel?> GetCancelOrderViewModelAsync(string userId, int orderId)
+        {
+            var order = await dbContext.Orders
+            .Include(o => o.Items)
+            .ThenInclude(i => i.Product)
+            .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
+
+            if (order == null || order.OrderStatus != OrderStatus.Pending)
+            {
+                return null;
+            }
+
+            return new CancelOrderViewModel
+            {
+                OrderId = order.Id,
+                OrderDate = order.OrderDate.ToString(CreatedOnFormat),
+                OrderStatus = order.OrderStatus.ToString(),
+                PaymentStatus = order.PaymentStatus.ToString(),
+                TotalAmount = order.Items.Sum(i => i.Product.Price * i.Quantity)
+            };
+        }
+
+    } 
 }

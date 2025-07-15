@@ -1,0 +1,27 @@
+﻿@using FoodStore.ViewModels
+@model CancelOrderViewModel
+
+@{
+    ViewData["Title"] = "Cancel Order";
+}
+
+<h2>Cancel Order</h2>
+
+<div class="card border-warning mb-3">
+    <div class="card-body bg-warning bg-opacity-25">
+        <h4 class="card-title text-warning">Are you sure you want to cancel this order?</h4>
+        <p class="card-text">
+            <strong>Order ID:</strong> @Model.OrderId<br />
+            <strong>Date:</strong> @Model.OrderDate<br />
+            <strong>Status:</strong> @Model.OrderStatus<br />
+            <strong>Payment:</strong> @Model.PaymentStatus<br />
+            <strong>Total:</strong> @($"{Model.TotalAmount:F2} lv.")
+        </p>
+    </div>
+</div>
+
+<form asp-action="ConfirmCancel" asp-controller="Cart" method="post">
+    <input type="hidden" asp-for="OrderId" />
+    <button type="submit" class="btn btn-danger">Cancel Order</button>
+    <a asp-action="History" asp-controller="Cart" class="btn btn-secondary">Back</a>
+</form>

@@ -5,7 +5,6 @@
     ViewData["Title"] = "Order History";
 }
 
-
 <h2>Order History</h2>
 
 @if (!Model.Any())
@@ -22,6 +21,7 @@ else
                 <th>Status</th>
                 <th>Payment</th>
                 <th>Total (lv.)</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,12 +29,20 @@ else
             {
                 <tr>
                     <td>@order.OrderId</td>
-                    <td>@order.OrderDate.ToString("g")</td>
+                    <td>@order.OrderDate</td>
                     <td>@order.OrderStatus</td>
                     <td>@order.PaymentStatus</td>
                     <td>@($"{order.TotalAmount:F2} lv.")</td>
+                    <td>
+                        @if (order.OrderStatus == nameof(FoodStore.Data.Models.Enums.OrderStatus.Pending))
+                        {
+                            <a asp-action="Cancel" asp-controller="Cart" asp-route-orderId="@order.OrderId"
+                               class="btn btn-warning btn-sm">Cancel</a>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
+

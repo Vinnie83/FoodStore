@@ -3,8 +3,11 @@ using FoodStore.Data.Models.Enums;
 using FoodStore.Services.Core.Contracts;
 using FoodStore.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+using static FoodStore.GCommon.ValidationConstants;
 
 namespace FoodStore.Controllers
 {
@@ -171,6 +174,58 @@ namespace FoodStore.Controllers
             {
                 return RedirectToAction("ServerError", "Error");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Cancel(int orderId)
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null)
+                    return RedirectToAction("Login", "User");
+
+                var model = await cartService.GetCancelOrderViewModelAsync(userId, orderId);
+
+                if (model == null)
+                    return RedirectToAction("NotFoundPage", "Error");
+
+                return View(model);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("ServerError", "Error");
+            }
+           
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmCancel(CancelOrderViewModel model)
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId == null) return RedirectToAction("Login", "User");
+
+                var success = await cartService.CancelOrderAsync(userId, model.OrderId);
+
+                if (!success)
+                {
+                    TempData["Error"] = "You can only cancel orders that are still pending and belong to you.";
+                    return RedirectToAction("History");
+                }
+
+                TempData["Message"] = "Order cancelled successfully.";
+                return RedirectToAction("History");
+
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("ServerError", "Error");
+            }
+           
         }
     }
 }

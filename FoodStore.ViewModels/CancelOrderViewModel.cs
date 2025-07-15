@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace FoodStore.ViewModels
 {
-    public class OrderHistoryViewModel
+    public class CancelOrderViewModel
     {
         public int OrderId { get; set; }
+
         public string OrderDate { get; set; } = null!;
+
         public string OrderStatus { get; set; } = null!;
+
         public string PaymentStatus { get; set; } = null!;
+
         public decimal TotalAmount { get; set; }
     }
 }

@@ -1,0 +1,44 @@
+﻿@using FoodStore.ViewModels.Admin
+@model List<OrderAdminViewModel>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+}
+
+<h2>Manage Orders</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.UserEmail</td>
+                <td>@order.OrderDate</td>
+                <td>@($"{order.TotalAmount:F2} lv")</td>
+                <td>@order.PaymentStatus</td>
+                <td>@order.OrderStatus</td>
+                <td>
+                    <form asp-action="MarkAsDelivered" method="post" asp-controller="OrderManagement">
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('Mark this order as delivered?');">
+                            Mark as Delivered
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -21,5 +21,7 @@ namespace FoodStore.Services.Core.Contracts
         Task<CancelOrderViewModel?> GetCancelOrderViewModelAsync(string userId, int orderId);
         Task<bool> CancelOrderAsync(string userId, int orderId);
         Task<Order?> GetByIdAsync(int orderId);
+
+        
     }
 }

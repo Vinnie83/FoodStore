@@ -1,5 +1,6 @@
 ﻿using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
+using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,20 +20,42 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? selectedStatus)
         {
 
-            var orders = await orderManagementService.GetAllProcessedOrdersAsync();
+            var allOrders = await orderManagementService.GetAllProcessedAndDeliveredOrdersAsync();
 
-            return View(orders);
+            var filtered = string.IsNullOrEmpty(selectedStatus)
+                ? allOrders
+                : allOrders.Where(o => o.OrderStatus == selectedStatus).ToList();
+
+            var viewModel = new OrderFilterViewModel
+            {
+                SelectedStatus = selectedStatus,
+                Orders = filtered
+            };
+
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Deliver(int id)
+        {
+            var model = await orderManagementService.GetOrderViewModelByIdAsync(id);
+
+            if (model == null)
+                return RedirectToAction("NotFoundPage", "Error");
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> MarkAsDelivered(int orderId)
+        public async Task<IActionResult> DeliverConfirmed(int id)
         {
             try
             {
-                var success = await orderManagementService.MarkOrderAsDeliveredAsync(orderId);
+                var success = await orderManagementService.MarkOrderAsDeliveredAsync(id);
 
                 if (!success)
                     return RedirectToAction("NotFoundPage", "Error");

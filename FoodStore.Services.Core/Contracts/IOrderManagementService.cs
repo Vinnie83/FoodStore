@@ -9,7 +9,11 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IOrderManagementService
     {
-        Task<List<OrderAdminViewModel>> GetAllProcessedOrdersAsync();
+        Task<List<OrderAdminViewModel>> GetAllProcessedAndDeliveredOrdersAsync();
         Task<bool> MarkOrderAsDeliveredAsync(int orderId);
+
+        Task<DeliverOrderViewModel?> GetOrderViewModelByIdAsync(int orderId);
+
+        Task<List<OrderAdminViewModel>> GetOrdersByStatusAsync(string? status);
     }
 }

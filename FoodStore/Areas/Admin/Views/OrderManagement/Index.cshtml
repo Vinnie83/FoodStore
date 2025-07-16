@@ -1,11 +1,21 @@
 ﻿@using FoodStore.ViewModels.Admin
-@model List<OrderAdminViewModel>
+@model OrderFilterViewModel
 
 @{
     ViewData["Title"] = "Manage Orders";
 }
 
 <h2>Manage Orders</h2>
+
+<form method="get" asp-action="Index" asp-area="Admin" asp-controller="OrderManagement" class="mb-3">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" name="SelectedStatus" class="form-select d-inline w-auto">
+        <option value="">All</option>
+        <option value="Processed" selected="@(Model.SelectedStatus == "Processed")">Processed</option>
+        <option value="Delivered" selected="@(Model.SelectedStatus == "Delivered")">Delivered</option>
+    </select>
+    <button type="submit" class="btn btn-primary ms-2">Filter</button>
+</form>
 
 <table class="table">
     <thead>
@@ -20,7 +30,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var order in Model)
+        @foreach (var order in Model.Orders)
         {
             <tr>
                 <td>@order.OrderId</td>
@@ -30,13 +40,19 @@
                 <td>@order.PaymentStatus</td>
                 <td>@order.OrderStatus</td>
                 <td>
-                    <form asp-action="MarkAsDelivered" method="post" asp-controller="OrderManagement">
-                        <input type="hidden" name="orderId" value="@order.OrderId" />
-                        <button type="submit" class="btn btn-success btn-sm"
-                                onclick="return confirm('Mark this order as delivered?');">
-                            Mark as Delivered
-                        </button>
-                    </form>
+                    @if (order.OrderStatus == "Processed")
+                    {
+                        <form asp-action="Deliver" method="get" asp-controller="OrderManagement" asp-area="Admin">
+                            <input type="hidden" name="id" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Deliver
+                            </button>
+                        </form>                   
+                    }
+                    else if (order.OrderStatus == "Delivered")
+                    {
+                        <button class="btn btn-secondary btn-sm" disabled>Delivered</button>
+                    }
                 </td>
             </tr>
         }

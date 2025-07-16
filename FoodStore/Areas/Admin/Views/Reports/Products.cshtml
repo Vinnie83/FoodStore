@@ -1,0 +1,82 @@
+﻿@using FoodStore.ViewModels.Admin
+@model ProductReportsPageViewModel
+
+@{
+    ViewData["Title"] = "Products Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Products Report</h2>
+
+<a class="btn btn-success mb-3" asp-area="Admin" asp-controller="Reports" asp-action="ExportProductsToExcel"
+   asp-route-filter="@Context.Request.Query["filter"]">
+    Export to Excel
+</a>
+
+<form method="get" class="mb-4">
+    <label for="filter">Filter by:</label>
+    <select name="filter" id="filter" class="form-select" onchange="this.form.submit()">
+        <option value="">-- Select Filter --</option>
+
+        <optgroup label="Filter by Category">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="category:@category">@category</option>
+            }
+        </optgroup>
+
+        <optgroup label="Filter by Brand">
+            @foreach (var brand in Model.Brands)
+            {
+                <option value="brand:@brand">@brand</option>
+            }
+        </optgroup>
+
+        <optgroup label="Filter by Supplier">
+            @foreach (var supplier in Model.Suppliers)
+            {
+                <option value="supplier:@supplier">@supplier</option>
+            }
+        </optgroup>
+    </select>
+</form>
+
+@if (!Model.Reports.Any())
+{
+    <div class="alert alert-warning">No product data available.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Supplier</th>
+                    <th>Price (lv)</th>
+                    <th>Stock Quantity</th>
+                    <th>Quantity Sold</th>
+                    <th>Total Revenue (lv)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Reports)
+                {
+                    <tr>
+                        <td>@product.ProductName</td>
+                        <td>@product.Category</td>
+                        <td>@product.Brand</td>
+                        <td>@product.Supplier</td>
+                        <td>@($"{product.Price:F2}")</td>
+                        <td>@product.StockQuantity</td>
+                        <td>@product.TotalOrderedQuantity</td>
+                        <td>@($"{product.TotalRevenue:F2}")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+

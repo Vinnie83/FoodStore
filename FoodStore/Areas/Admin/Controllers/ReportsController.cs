@@ -77,5 +77,35 @@ namespace FoodStore.Areas.Admin.Controllers
                 return RedirectToAction("ServerError", "Error");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Products(string? filter)
+        {
+            try
+            {
+                var products = await reportService.GetProductReportsAsync(filter);
+                return View(products);
+            }
+            catch
+            {
+                return RedirectToAction("ServerError", "Error");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportProductsToExcel(string? filter)
+        {
+            try
+            {
+                var excelBytes = await reportService.ExportProductsToExcelAsync(filter);
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "ProductsReport.xlsx");
+            }
+            catch
+            {
+                return RedirectToAction("ServerError", "Error");
+            }
+        }
     }
 }

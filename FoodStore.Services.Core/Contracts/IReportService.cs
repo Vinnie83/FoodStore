@@ -13,5 +13,8 @@ namespace FoodStore.Services.Core.Contracts
         Task<OrderDetailsViewModel?> GetOrderDetailsAsync(int orderId);
 
         Task<byte[]> ExportOrdersToExcelAsync(string? filter);
+
+        Task<ProductReportsPageViewModel> GetProductReportsAsync(string? filter);
+        Task<byte[]> ExportProductsToExcelAsync(string? filter);
     }
 }

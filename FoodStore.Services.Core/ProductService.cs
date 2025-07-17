@@ -238,5 +238,35 @@ namespace FoodStore.Services.Core
 
             return result;
         }
+
+        public async Task<IEnumerable<ProductSearchResultViewModel>> SearchProductsAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return Enumerable.Empty<ProductSearchResultViewModel>();
+            }
+
+            query = query.ToLower();
+
+            return await this.dbContext
+                .Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.Name.ToLower().Contains(query) ||
+                       p.Category.Name.ToLower().Contains(query) ||
+                       p.Supplier.Name.ToLower().Contains(query) ||
+                       p.Supplier.Name.ToLower().Contains(query)             
+                )
+                .Select(p => new ProductSearchResultViewModel()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Category = p.Category.Name,
+                    Brand = p.Brand.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl
+                })
+                .ToArrayAsync();
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace FoodStore.Services.Core
                 {
                     OrderId = o.Id,
                     UserEmail = o.User.Email,
-                    OrderDate = o.OrderDate.ToString("yyyy-MM-dd HH:mm"),
+                    OrderDate = o.OrderDate.ToString(CreatedOnFormat),
                     TotalAmount = o.TotalAmount,
                     PaymentStatus = o.PaymentStatus.ToString(),
                     OrderStatus = o.OrderStatus.ToString()

@@ -41,6 +41,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Favorites" asp-action="Index">Favorites</a>
                         </li>
+
+                        <li class="nav-item dropdown" style="position: relative;">
+                            <a class="nav-link text-dark" href="#" id="searchToggle">
+                                <i class="bi bi-search"></i>
+                            </a>
+                            <form asp-controller="Product" asp-action="Search" method="get"
+                                  class="dropdown-menu p-2 shadow-sm"
+                                  id="searchForm"
+                                  style="min-width: 200px; position: absolute; right: 0; top: 100%; display: none;">
+
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="query" class="form-control" placeholder="Search..." />
+                                    <button type="submit" class="btn btn-outline-secondary">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </li>
+
+
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
@@ -130,6 +150,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/search-toggle.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

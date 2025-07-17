@@ -25,5 +25,7 @@ namespace FoodStore.Services.Core.Contracts
         Task<ProductDeleteInputModel?> GetProductForDeletingAsync(string userId, int? productId);
 
         Task<bool> SoftDeleteProductAsync(string userId, ProductDeleteInputModel inputModel);
+
+        Task<IEnumerable<ProductSearchResultViewModel>> SearchProductsAsync(string query);
     }
 }

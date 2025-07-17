@@ -60,5 +60,26 @@ namespace FoodStore.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string query)
+        {
+            try
+            {
+                var result = await productService.SearchProductsAsync(query);
+
+                if (result == null)
+                {
+                    return RedirectToAction("NotFoundPage", "Error");
+                }
+                return View(result);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("ServerError", "Error");
+            }
+
+        }
+
     }
 }

@@ -56,6 +56,10 @@ namespace FoodStore
             builder.Services.AddScoped<IReportService, ReportService>();
             builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
 
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.Secure = CookieSecurePolicy.Always;
+            });
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -82,6 +86,8 @@ namespace FoodStore
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
 
             app.UseAuthentication();
             app.UseAuthorization();

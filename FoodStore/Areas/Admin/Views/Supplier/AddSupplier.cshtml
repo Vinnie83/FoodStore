@@ -8,6 +8,7 @@
 <h2 class="mb-4">Add a New Supplier</h2>
 
 <form asp-area="Admin" asp-controller="Supplier" asp-action="AddSupplier" method="post" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
     <div class="mb-3">
         <label asp-for="Name" class="form-label">Brand Name</label>
         <input asp-for="Name" class="form-control" placeholder="Enter supplier name" />

@@ -32,7 +32,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
-
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddSupplier(AddSupplierInputModel inputModel)
         {
             try
@@ -99,6 +99,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSupplier(EditSupplierInputModel inputModel)
         {
             try
@@ -158,6 +159,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(SupplierDeleteViewModel inputModel)
         {
             try

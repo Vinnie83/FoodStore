@@ -8,6 +8,7 @@
 <h2 class="mb-4">Edit Brand</h2>
 
 <form asp-area="Admin" asp-controller="Brand" asp-action="EditBrand" method="post" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">

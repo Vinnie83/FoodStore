@@ -43,6 +43,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int productId, int quantity)
         {
             try
@@ -105,6 +106,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()
         {
             try

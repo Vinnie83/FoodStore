@@ -19,6 +19,7 @@
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <form asp-controller="Cart" asp-action="Add" method="post">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" name="productId" value="@Model.Id" />
                     <input type="hidden" name="quantity" value="1" />
                     <button type="submit" class="btn btn-success mt-3">Add to Cart</button>

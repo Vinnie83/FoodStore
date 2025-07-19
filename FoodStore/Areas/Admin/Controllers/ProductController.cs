@@ -47,6 +47,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
 
         public async Task<IActionResult> Create(ProductCreateInputModel inputModel)
         {
@@ -122,6 +123,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditProductInputModel inputModel)
         {
             try
@@ -185,6 +187,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(ProductDeleteInputModel inputModel)
         {
             try

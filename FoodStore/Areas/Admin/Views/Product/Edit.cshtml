@@ -6,6 +6,7 @@
 }
 
 <form asp-action="Edit" method="post" class="form-container">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">

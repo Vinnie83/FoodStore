@@ -13,6 +13,7 @@
 
 <div>
     <form asp-area="Admin" asp-controller="Product" asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Name" />
         <input type="hidden" asp-for="CategoryName" />

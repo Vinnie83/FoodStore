@@ -37,6 +37,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddBrand(AddBrandInputModel inputModel)
         {
             try
@@ -103,6 +104,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBrand(EditBrandInputModel inputModel)
         {
             try
@@ -162,6 +164,7 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(BrandDeleteViewModel inputModel)
         {
             try

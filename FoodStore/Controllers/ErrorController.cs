@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStore.Controllers
 {
+    [AllowAnonymous]
+    [Route("Error")]
     public class ErrorController : BaseController
     {
         [Route("Error/404")]

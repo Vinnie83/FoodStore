@@ -1,4 +1,5 @@
-﻿using FoodStore.ViewModels.Admin;
+﻿using FoodStore.ViewModels;
+using FoodStore.ViewModels.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace FoodStore.Services.Core.Contracts
     {
         Task<IEnumerable<AddBrandDropDownMenu>> GetBrandsDropDownAsync();
 
-        Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync();
+        Task<PaginatedList<BrandViewModel>> GetAllBrandsAsync(int pageIndex, int pageSize);
 
         Task<bool> AddBrandAsync(string userId, AddBrandInputModel inputModel);
 

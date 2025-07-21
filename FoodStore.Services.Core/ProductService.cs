@@ -252,10 +252,11 @@ namespace FoodStore.Services.Core
                 .Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
+                .Include(p => p.Supplier)
                 .Where(p => p.Name.ToLower().Contains(query) ||
                        p.Category.Name.ToLower().Contains(query) ||
                        p.Supplier.Name.ToLower().Contains(query) ||
-                       p.Supplier.Name.ToLower().Contains(query)             
+                       p.Brand.Name.ToLower().Contains(query)             
                 )
                 .Select(p => new ProductSearchResultViewModel()
                 {

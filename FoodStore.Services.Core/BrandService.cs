@@ -1,6 +1,7 @@
 ﻿using FoodStore.Data;
 using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
+using FoodStore.ViewModels;
 using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,9 +40,9 @@ namespace FoodStore.Services.Core
             return addBrandsAsDropDown;
         }
 
-        public async Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync()
+        public async Task<PaginatedList<BrandViewModel>> GetAllBrandsAsync(int pageIndex, int pageSize)
         {
-            var allBrands = await this.dbContext
+            var allBrands = this.dbContext
                 .Brands
                 .AsNoTracking()
                 .Where(b => !b.IsDeleted)
@@ -50,10 +51,9 @@ namespace FoodStore.Services.Core
                     Id = b.Id,
                     Name = b.Name,
                     CountryOfOrigin = b.CountryOfOrigin
-                })
-                .ToListAsync();
+                });
 
-            return allBrands;
+            return await PaginatedList<BrandViewModel>.CreateAsync(allBrands, pageIndex, pageSize);
         }
 
 

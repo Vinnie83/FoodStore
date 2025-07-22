@@ -10,7 +10,7 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductViewModel>> GetByCategoryAsync(string categoryName);
+        Task<PaginatedList<ProductViewModel>> GetByCategoryAsync(string categoryName, int pageIndex, int pageSize);
 
         Task<ProductDetailsViewModel> GetProductByIdAsync(int productId);
 

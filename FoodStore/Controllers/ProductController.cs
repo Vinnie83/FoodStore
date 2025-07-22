@@ -15,7 +15,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Category(string category)
+        public async Task<IActionResult> Category(string category, int page = 1)
         {
             try
             {
@@ -24,7 +24,8 @@ namespace FoodStore.Controllers
                     return RedirectToAction("NotFoundPage", "Error");
                 }
 
-                var products = await productService.GetByCategoryAsync(category);
+                int pageSize = 4;
+                var products = await productService.GetByCategoryAsync(category, page, pageSize);
 
                 var viewModel = new CategoryProductsViewModel
                 {

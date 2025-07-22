@@ -48,6 +48,41 @@ else
         }
     </div>
 
+    <nav>
+    <ul class="pagination justify-content-center mt-4">
+        @if (Model.Products.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Category"
+                   asp-route-category="@Model.CategoryName"
+                   asp-route-page="@(Model.Products.PageIndex - 1)">
+                    Previous
+                </a>
+            </li>
+        }
+
+        @if (Model.Products.TotalPages > 1)
+        {
+            <li class="page-item active">
+                <span class="page-link">@Model.Products.PageIndex</span>
+            </li>
+        }
+
+        @if (Model.Products.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Category"
+                   asp-route-category="@Model.CategoryName"
+                   asp-route-page="@(Model.Products.PageIndex + 1)">
+                    Next
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
     <script>
         function increaseQty(button) {
             const input = button.parentElement.querySelector('input');

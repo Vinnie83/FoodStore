@@ -9,6 +9,6 @@ namespace FoodStore.ViewModels
     public class CategoryProductsViewModel
     {
         public string CategoryName { get; set; } = null!;
-        public IEnumerable<ProductViewModel> Products { get; set; } = new List<ProductViewModel>();
+        public PaginatedList<ProductViewModel>? Products { get; set; }
     }
 }

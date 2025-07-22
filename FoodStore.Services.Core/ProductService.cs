@@ -25,13 +25,14 @@ namespace FoodStore.Services.Core
         }
 
 
-        public async Task<IEnumerable<ProductViewModel>> GetByCategoryAsync(string categoryName)
+        public async Task<PaginatedList<ProductViewModel>> GetByCategoryAsync(string categoryName, int pageIndex, int pageSize)
         {
-            IEnumerable<ProductViewModel> productsByCategory = await this.dbContext
+            var productsByCategory = this.dbContext
                 .Products
                 .Include(p => p.Category)
                 .AsNoTracking()
                 .Where(p => !p.IsDeleted &&
+                                   p.Category != null &&
                                    p.Category.Name.ToLower() == categoryName.ToLower())
                 .Select(p => new ProductViewModel()
                 {
@@ -42,10 +43,9 @@ namespace FoodStore.Services.Core
                     StockQuantity = p.Quantity,
                     UnitQuantity = "1"
 
-                })
-                .ToListAsync();
+                });
 
-            return productsByCategory;
+            return await PaginatedList<ProductViewModel>.CreateAsync(productsByCategory, pageIndex, pageSize) ;
         }
 
         public async Task<ProductDetailsViewModel> GetProductByIdAsync(int productId)

@@ -2,7 +2,7 @@
 
 namespace FoodStore.ViewModels
 {
-    public class PaginatedList<T>
+    public class PaginatedList<T> : List<T> 
     {
         public List<T> Items { get; private set; }
         public int PageIndex { get; private set; }
@@ -12,6 +12,7 @@ namespace FoodStore.ViewModels
         public bool HasNextPage => PageIndex < TotalPages;
 
         private PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+            : base(items)
         {
             Items = items;
             PageIndex = pageIndex;

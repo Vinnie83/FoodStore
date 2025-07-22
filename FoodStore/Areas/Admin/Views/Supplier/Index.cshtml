@@ -35,15 +35,15 @@ else
                         <td>@supplier.EmailAddress</td>
                         <td>
                             <a asp-area="Admin"
-                               asp-controller="Supplier"
-                               asp-action="EditSupplier"
-                               asp-route-id="@supplier.Id"
-                               class="btn btn-sm btn-warning me-2">Edit</a>
+                            asp-controller="Supplier"
+                            asp-action="EditSupplier"
+                            asp-route-id="@supplier.Id"
+                            class="btn btn-sm btn-warning me-2">Edit</a>
                             <a asp-area="Admin"
-                               asp-controller="Supplier"
-                               asp-action="Delete"
-                               asp-route-id="@supplier.Id"
-                               class="btn btn-sm btn-danger">Delete</a>
+                            asp-controller="Supplier"
+                            asp-action="Delete"
+                            asp-route-id="@supplier.Id"
+                            class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 }
@@ -60,9 +60,13 @@ else
                 </li>
             }
 
-            <li class="page-item active">
-                <span class="page-link">@Model.PageIndex</span>
-            </li>
+            @if (Model.TotalPages > 1)
+            {
+                <li class="page-item active">
+                    <span class="page-link">@Model.PageIndex</span>
+                </li>
+            }
+            
 
             @if (Model.HasNextPage)
             {

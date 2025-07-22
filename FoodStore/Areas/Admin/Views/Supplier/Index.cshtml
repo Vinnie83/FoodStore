@@ -1,5 +1,6 @@
-﻿@using FoodStore.ViewModels.Admin
-@model IEnumerable<SupplierViewModel>
+﻿@using FoodStore.ViewModels
+@using FoodStore.ViewModels.Admin
+@model PaginatedList<SupplierViewModel>
 
 @{
     ViewData["Title"] = "Suppliers";
@@ -7,7 +8,7 @@
 
 <h2 class="mb-4">All Suppliers</h2>
 
-@if (!Model.Any())
+@if (!Model.Items.Any())
 {
     <div class="alert alert-warning">No suppliers available.</div>
 }
@@ -25,7 +26,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var supplier in Model)
+                @foreach (var supplier in Model.Items)
                 {
                     <tr>
                         <td>@supplier.Id</td>
@@ -49,6 +50,28 @@ else
             </tbody>
         </table>
     </div>
+
+    <nav>
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)">Previous</a>
+                </li>
+            }
+
+            <li class="page-item active">
+                <span class="page-link">@Model.PageIndex</span>
+            </li>
+
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
 
 

@@ -19,9 +19,10 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var services = await this.supplierService.GetAllSuppliersAsync();
+            int pageSize = 10;
+            var services = await this.supplierService.GetAllSuppliersAsync(page, pageSize);
             return View(services);
         }
 

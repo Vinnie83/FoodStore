@@ -1,4 +1,5 @@
-﻿using FoodStore.ViewModels.Admin;
+﻿using FoodStore.ViewModels;
+using FoodStore.ViewModels.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace FoodStore.Services.Core.Contracts
     public interface ISupplierService 
     {
         Task<IEnumerable<AddSupplierDropDownMenu>> GetSuppliersDropDownAsync();
-        Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync();
+        Task<PaginatedList<SupplierViewModel>> GetAllSuppliersAsync(int pageIndex, int pageSize);
 
         Task<bool> AddSupplierAsync(string userId, AddSupplierInputModel inputModel);
 

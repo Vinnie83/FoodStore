@@ -1,6 +1,7 @@
 ﻿using FoodStore.Data;
 using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
+using FoodStore.ViewModels;
 using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,23 +42,22 @@ namespace FoodStore.Services.Core
             return addSuppliersAsDropDown;
         }
 
-        public async Task<IEnumerable<SupplierViewModel>> GetAllSuppliersAsync()
+        public async Task<PaginatedList<SupplierViewModel>> GetAllSuppliersAsync(int pageIndex, int pageSize)
         {
-            var allSuppliers = await this.dbContext
+            var allSuppliers = this.dbContext
                 .Suppliers
                 .AsNoTracking()
                 .Where(s => !s.IsDeleted)
                 .Select(s => new SupplierViewModel()
                 {
-                    Id= s.Id,
+                    Id = s.Id,
                     Name = s.Name,
                     Phone = s.Phone,
                     EmailAddress = s.EmailAddress
-                    
-                })
-                .ToListAsync();
 
-            return allSuppliers;
+                });
+
+            return await PaginatedList<SupplierViewModel>.CreateAsync(allSuppliers, pageIndex, pageSize);
         }
 
         public async Task<bool> AddSupplierAsync(string userId, AddSupplierInputModel model)

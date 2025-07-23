@@ -23,12 +23,12 @@ namespace FoodStore.Areas.Admin.Controllers
         {
             return View(); 
         }
-        public async Task<IActionResult> Orders(string? filter)
+        public async Task<IActionResult> Orders(string? filter, int page = 1)
         {
             try
             {
-
-                var orders = await reportService.GetOrderReportsAsync(filter);
+                int pageSize = 10;
+                var orders = await reportService.GetOrderReportsAsync(filter, page, pageSize);
 
                 return View(orders);
 

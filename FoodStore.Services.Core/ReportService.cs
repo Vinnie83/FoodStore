@@ -12,6 +12,8 @@ using System.Drawing;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using FoodStore.Data.Models.Enums;
+using FoodStore.ViewModels;
+using System.Drawing.Printing;
 
 
 namespace FoodStore.Services.Core
@@ -26,71 +28,14 @@ namespace FoodStore.Services.Core
         }
 
 
-        public async Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter)
+        public async Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter, int pageIndex, int pageSize)
         {
-            var ordersQuery = dbContext.Orders
-                .Where(o => o.OrderStatus != OrderStatus.Pending)
-                .Include(o => o.User)
-                .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Brand)
-                .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Supplier)
-                .Include(o => o.Items)
-                .ThenInclude(oi => oi.Product)
-                .ThenInclude(p => p.Category)
-                .AsNoTracking()
-                .AsQueryable();
-
-            bool includePending = false;
-            string? filterType = null;
-            string? filterValue = null;
-
-
-            if (!string.IsNullOrEmpty(filter) && filter.Contains(":"))
-            {
-                var parts = filter.Split(':', 2);
-                filterType = parts[0].Trim().ToLower();
-                filterValue = parts[1].Trim().ToLower();
-            }
-
-            var ordersList = await ordersQuery
-                .Where(o =>
-                    o.Items.Any(i => i.Quantity > 0 && i.Product.Price > 0) &&
-                    filterType == null ||
-                    (filterType == "user" && o.User != null && o.User.Email.ToLower() == filterValue) ||
-                    (filterType == "supplier" && o.Items.Any(i => i.Product.Supplier != null && i.Product.Supplier.Name.ToLower() == filterValue)) ||
-                    (filterType == "brand" && o.Items.Any(i => i.Product.Brand != null && i.Product.Brand.Name.ToLower() == filterValue)) ||
-                    (filterType == "category" && o.Items.Any(i => i.Product.Category != null && i.Product.Category.Name.ToLower() == filterValue))
-                )
-                .Select(o => new
-                {
-                    Order = o,
-                    TotalPrice = o.Items.Sum(i => i.Quantity * i.Product.Price)
-                })
-                .Where(x => x.TotalPrice > 0)
-                .ToListAsync();
-
-            ordersList = filter switch
-            {
-                "order_id" => ordersList.OrderBy(x => x.Order.Id).ToList(),
-                "date_asc" => ordersList.OrderBy(x => x.Order.OrderDate).ToList(),
-                "date_desc" => ordersList.OrderByDescending(x => x.Order.OrderDate).ToList(),
-                _ => ordersList
-            };
-
-            var reportData = ordersList.Select(x => new OrderReportViewModel
-            {
-                OrderId = x.Order.Id,
-                OrderDate = x.Order.OrderDate.ToString(CreatedOnFormat),
-                UserEmail = x.Order.User.Email,
-                TotalPrice = x.TotalPrice
-            }).ToList();
+            var paginatedReports = await PaginatedList<OrderReportViewModel>.CreateAsync(
+             GetFilteredOrderReportsQuery(filter), pageIndex, pageSize);
 
             return new OrdersReportPageViewModel
             {
-                Reports = reportData,
+                Reports = paginatedReports,
                 UserEmails = await dbContext.Users.Select(u => u.Email).Distinct().ToListAsync(),
                 Suppliers = await dbContext.Suppliers.Select(s => s.Name).Distinct().ToListAsync(),
                 Brands = await dbContext.Brands.Select(b => b.Name).Distinct().ToListAsync(),
@@ -136,13 +81,15 @@ namespace FoodStore.Services.Core
 
             return viewModel;
         }
-
+        public async Task<List<OrderReportViewModel>> GetAllOrderReportsAsync(string? filter)
+        {
+            return await GetFilteredOrderReportsQuery(filter).ToListAsync();
+        }
         public async Task<byte[]> ExportOrdersToExcelAsync(string? filter)
         {
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
-
-            var report = await GetOrderReportsAsync(filter);
+            var reports = await GetAllOrderReportsAsync(filter);
 
             using var package = new ExcelPackage();
             var worksheet = package.Workbook.Worksheets.Add("Orders");
@@ -153,7 +100,7 @@ namespace FoodStore.Services.Core
             worksheet.Cells[1, 4].Value = "Total Price (lv)";
 
             int row = 2;
-            foreach (var order in report.Reports)
+            foreach (var order in reports)
             {
                 worksheet.Cells[row, 1].Value = order.OrderId;
                 worksheet.Cells[row, 2].Value = order.OrderDate;
@@ -255,6 +202,70 @@ namespace FoodStore.Services.Core
 
             worksheet.Cells.AutoFitColumns();
             return await package.GetAsByteArrayAsync();
+        }
+
+        private IQueryable<OrderReportViewModel> GetFilteredOrderReportsQuery(string? filter)
+        {
+            var query = dbContext.Orders
+                .Where(o => o.OrderStatus != OrderStatus.Pending)
+                .Include(o => o.User)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Brand)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Supplier)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                        .ThenInclude(p => p.Category)
+                .AsNoTracking();
+
+            string? filterType = null;
+            string? filterValue = null;
+
+            if (!string.IsNullOrEmpty(filter) && filter.Contains(":"))
+            {
+                var parts = filter.Split(':', 2);
+                filterType = parts[0].Trim().ToLower();
+                filterValue = parts[1].Trim().ToLower();
+            }
+
+            if (filterType != null)
+            {
+                query = query.Where(o =>
+                    o.Items.Any(i => i.Quantity > 0 && i.Product.Price > 0) &&
+                    (
+                        (filterType == "user" && o.User != null && o.User.Email.ToLower() == filterValue) ||
+                        (filterType == "supplier" && o.Items.Any(i => i.Product.Supplier != null && i.Product.Supplier.Name.ToLower() == filterValue)) ||
+                        (filterType == "brand" && o.Items.Any(i => i.Product.Brand != null && i.Product.Brand.Name.ToLower() == filterValue)) ||
+                        (filterType == "category" && o.Items.Any(i => i.Product.Category != null && i.Product.Category.Name.ToLower() == filterValue))
+                    )
+                );
+            }
+            else
+            {
+                query = query.Where(o => o.Items.Any(i => i.Quantity > 0 && i.Product.Price > 0));
+            }
+
+            var reportQuery = query
+                .Select(o => new OrderReportViewModel
+                {
+                    OrderId = o.Id,
+                    OrderDate = o.OrderDate.ToString(CreatedOnFormat),
+                    UserEmail = o.User.Email,
+                    TotalPrice = o.Items.Sum(i => i.Quantity * i.Product.Price)
+                })
+                .Where(o => o.TotalPrice > 0);
+
+            // Sorting
+            if (filter == "order_id")
+                reportQuery = reportQuery.OrderBy(o => o.OrderId);
+            else if (filter == "date_asc")
+                reportQuery = reportQuery.OrderBy(o => o.OrderDate);
+            else if (filter == "date_desc")
+                reportQuery = reportQuery.OrderByDescending(o => o.OrderDate);
+
+            return reportQuery;
         }
     }
 }

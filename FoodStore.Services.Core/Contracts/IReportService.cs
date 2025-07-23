@@ -9,9 +9,10 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IReportService
     {
-        Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter);
+        Task<OrdersReportPageViewModel> GetOrderReportsAsync(string? filter, int pageIndex, int pageSize);
         Task<OrderDetailsViewModel?> GetOrderDetailsAsync(int orderId);
 
+        Task<List<OrderReportViewModel>> GetAllOrderReportsAsync(string? filter);
         Task<byte[]> ExportOrdersToExcelAsync(string? filter);
 
         Task<ProductReportsPageViewModel> GetProductReportsAsync(string? filter);

@@ -1,4 +1,5 @@
-﻿using FoodStore.ViewModels.Admin;
+﻿using FoodStore.ViewModels;
+using FoodStore.ViewModels.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IOrderManagementService
     {
-        Task<List<OrderAdminViewModel>> GetAllProcessedAndDeliveredOrdersAsync();
+        Task<PaginatedList<OrderAdminViewModel>> GetAllProcessedAndDeliveredOrdersAsync(string? status, int pageIndex, int pageSize);
         Task<bool> MarkOrderAsDeliveredAsync(int orderId);
 
         Task<DeliverOrderViewModel?> GetOrderViewModelByIdAsync(int orderId);

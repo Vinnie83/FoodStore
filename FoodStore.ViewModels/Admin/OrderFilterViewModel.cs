@@ -9,6 +9,6 @@ namespace FoodStore.ViewModels.Admin
     public class OrderFilterViewModel
     {
         public string? SelectedStatus { get; set; }
-        public List<OrderAdminViewModel> Orders { get; set; } = new();
+        public PaginatedList<OrderAdminViewModel> Orders { get; set; } = null!;
     }
 }

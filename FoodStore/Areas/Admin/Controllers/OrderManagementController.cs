@@ -20,19 +20,15 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
 
-        public async Task<IActionResult> Index(string? selectedStatus)
+        public async Task<IActionResult> Index(string? selectedStatus, int page = 1)
         {
-
-            var allOrders = await orderManagementService.GetAllProcessedAndDeliveredOrdersAsync();
-
-            var filtered = string.IsNullOrEmpty(selectedStatus)
-                ? allOrders
-                : allOrders.Where(o => o.OrderStatus == selectedStatus).ToList();
+            int pageSize = 10;
+            var orders = await orderManagementService.GetAllProcessedAndDeliveredOrdersAsync(selectedStatus, page, pageSize);
 
             var viewModel = new OrderFilterViewModel
             {
                 SelectedStatus = selectedStatus,
-                Orders = filtered
+                Orders = orders
             };
 
 

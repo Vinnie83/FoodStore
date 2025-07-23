@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using FoodStore.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FoodStore.Services.Core
 {
@@ -21,23 +23,29 @@ namespace FoodStore.Services.Core
         {
             this.dbContext = dbContext;
         }
-        public async Task<List<OrderAdminViewModel>> GetAllProcessedAndDeliveredOrdersAsync()
+        public async Task<PaginatedList<OrderAdminViewModel>> GetAllProcessedAndDeliveredOrdersAsync(string? status, int pageIndex, int pageSize)
         {
-            var orders = await this.dbContext.Orders
-           .Where(o => o.OrderStatus == OrderStatus.Processed || o.OrderStatus == OrderStatus.Delivered)
-           .OrderByDescending(o => o.OrderDate)
-           .Select(o => new OrderAdminViewModel
-           {
-               OrderId = o.Id,
-               UserEmail = o.User.Email,
-               OrderDate = o.OrderDate.ToString(CreatedOnFormat),
-               TotalAmount = o.TotalAmount,
-               PaymentStatus = o.PaymentStatus.ToString(),
-               OrderStatus = o.OrderStatus.ToString()
-           })
-           .ToListAsync();
+            var query = this.dbContext.Orders
+            .Where(o => o.OrderStatus == OrderStatus.Processed || o.OrderStatus == OrderStatus.Delivered);
 
-            return orders;
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderStatus>(status, out var parsedStatus))
+            {
+                query = query.Where(o => o.OrderStatus == parsedStatus);
+            }
+
+            var projected = query
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderAdminViewModel
+                {
+                    OrderId = o.Id,
+                    UserEmail = o.User.Email,
+                    OrderDate = o.OrderDate.ToString(CreatedOnFormat),
+                    TotalAmount = o.TotalAmount,
+                    PaymentStatus = o.PaymentStatus.ToString(),
+                    OrderStatus = o.OrderStatus.ToString()
+                });
+
+            return await PaginatedList<OrderAdminViewModel>.CreateAsync(projected, pageIndex, pageSize);
         }
 
         

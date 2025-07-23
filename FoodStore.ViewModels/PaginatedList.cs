@@ -14,7 +14,6 @@ namespace FoodStore.ViewModels
         private PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
             : base(items)
         {
-            Items = items;
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         }

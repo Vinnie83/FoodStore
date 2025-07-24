@@ -9,7 +9,7 @@ namespace FoodStore.ViewModels.Admin
     public class OrdersReportPageViewModel
     {
 
-        public PaginatedList<OrderReportViewModel> Reports { get; set; }
+        public PaginatedList<OrderReportViewModel> Reports { get; set; } = null!;
 
         public List<string> UserEmails { get; set; } = new();
         public List<string> Suppliers { get; set; } = new();

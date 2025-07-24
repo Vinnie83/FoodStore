@@ -79,11 +79,12 @@ namespace FoodStore.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Products(string? filter)
+        public async Task<IActionResult> Products(string? filter, int page = 1)
         {
             try
             {
-                var products = await reportService.GetProductReportsAsync(filter);
+                int pageSize = 10;
+                var products = await reportService.GetProductReportsAsync(filter, page, pageSize);
                 return View(products);
             }
             catch

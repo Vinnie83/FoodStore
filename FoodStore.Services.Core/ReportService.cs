@@ -14,6 +14,7 @@ using OfficeOpenXml.Style;
 using FoodStore.Data.Models.Enums;
 using FoodStore.ViewModels;
 using System.Drawing.Printing;
+using Azure;
 
 
 namespace FoodStore.Services.Core
@@ -114,7 +115,7 @@ namespace FoodStore.Services.Core
             return await package.GetAsByteArrayAsync();
         }
 
-        public async Task<ProductReportsPageViewModel> GetProductReportsAsync(string? filter)
+        public async Task<ProductReportsPageViewModel> GetProductReportsAsync(string? filter, int pageIndex, int pageSize)
         {
             var query = dbContext.Products
             .Include(p => p.Brand)
@@ -145,7 +146,7 @@ namespace FoodStore.Services.Core
                 }
             }
 
-            var reportData = await query
+            var reportData = query
                 .Select(p => new ProductReportViewModel
                 {
                     ProductName = p.Name,
@@ -156,12 +157,14 @@ namespace FoodStore.Services.Core
                     StockQuantity = p.Quantity,
                     TotalOrderedQuantity = p.OrderItems.Sum(oi => oi.Quantity)
                 })
-                .Where(p => p.TotalOrderedQuantity > 0)
-                .ToListAsync();
+                .Where(p => p.TotalOrderedQuantity > 0);
+
+            var paginatedReports = await PaginatedList<ProductReportViewModel>.CreateAsync(reportData, pageIndex, pageSize);
+
 
             return new ProductReportsPageViewModel
             {
-                Reports = reportData,
+                Reports = paginatedReports,
                 Categories = await dbContext.Categories.Select(c => c.Name).Distinct().ToListAsync(),
                 Brands = await dbContext.Brands.Select(b => b.Name).Distinct().ToListAsync(),
                 Suppliers = await dbContext.Suppliers.Select(s => s.Name).Distinct().ToListAsync()
@@ -172,7 +175,7 @@ namespace FoodStore.Services.Core
         {
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
-            var report = await GetProductReportsAsync(filter);
+            var report = await GetProductReportsAsync(filter, pageIndex: 1, pageSize: 10);
 
             using var package = new ExcelPackage();
             var worksheet = package.Workbook.Worksheets.Add("Products");
@@ -257,7 +260,6 @@ namespace FoodStore.Services.Core
                 })
                 .Where(o => o.TotalPrice > 0);
 
-            // Sorting
             if (filter == "order_id")
                 reportQuery = reportQuery.OrderBy(o => o.OrderId);
             else if (filter == "date_asc")

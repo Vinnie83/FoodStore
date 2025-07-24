@@ -8,9 +8,9 @@ namespace FoodStore.ViewModels.Admin
 {
     public class ProductReportsPageViewModel
     {
-        public List<ProductReportViewModel> Reports { get; set; } = new();
-        public List<string> Categories { get; set; } = new();
-        public List<string> Brands { get; set; } = new();
-        public List<string> Suppliers { get; set; } = new();
+        public PaginatedList<ProductReportViewModel> Reports { get; set; } = null!;
+        public List<string> Categories { get; set; } = null!;
+        public List<string> Brands { get; set; } = null!;
+        public List<string> Suppliers { get; set; } = null!;
     }
 }

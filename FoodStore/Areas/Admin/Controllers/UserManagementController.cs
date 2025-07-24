@@ -20,9 +20,10 @@ namespace FoodStore.Areas.Admin.Controllers
 
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex = 1)
         {
-            var users = await adminService.GetAllUsersAsync();
+            int pageSize = 5;
+            var users = await adminService.GetAllUsersAsync(pageIndex, pageSize);
             return View(users);
         }
 

@@ -1,4 +1,5 @@
-﻿using FoodStore.ViewModels.Admin;
+﻿using FoodStore.ViewModels;
+using FoodStore.ViewModels.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace FoodStore.Services.Core.Contracts
 {
     public interface IAdminService
     {
-        Task<IEnumerable<UserViewModel>> GetAllUsersAsync();
+        Task<PaginatedList<UserViewModel>> GetAllUsersAsync(int pageIndex, int pageSize);
     }
 }

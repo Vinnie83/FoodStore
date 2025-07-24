@@ -1,9 +1,11 @@
 ﻿using FoodStore.Data.Models;
 using FoodStore.Services.Core.Contracts;
+using FoodStore.ViewModels;
 using FoodStore.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace FoodStore.Services.Core
 {
@@ -15,13 +17,18 @@ namespace FoodStore.Services.Core
         {
             this.userManager = userManager;     
         }
-        public async Task<IEnumerable<UserViewModel>> GetAllUsersAsync()
+        public async Task<PaginatedList<UserViewModel>> GetAllUsersAsync(int pageIndex, int pageSize)
         {
-            var users = await userManager.Users.ToListAsync();
+            var query = userManager.Users.OrderBy(u => u.UserName); 
+            var totalCount = await query.CountAsync();
+            var usersPage = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             var result = new List<UserViewModel>();
 
-            foreach (var user in users)
+            foreach (var user in usersPage)
             {
                 var roles = await userManager.GetRolesAsync(user);
 
@@ -34,7 +41,8 @@ namespace FoodStore.Services.Core
                 });
             }
 
-            return result;
+            return new PaginatedList<UserViewModel>(result, totalCount, pageIndex, pageSize);
         }
+
     }
 }

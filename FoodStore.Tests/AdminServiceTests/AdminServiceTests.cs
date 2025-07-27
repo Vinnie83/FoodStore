@@ -44,7 +44,12 @@ namespace FoodStore.Tests.AdminServiceTests
         {
             _context.Database.EnsureDeleted();
             _context.Dispose();
-            _userMgr.Dispose(); 
+            _userMgr.Dispose();
+
+            if (_serviceProvider is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
 
         }
 

@@ -23,7 +23,7 @@ namespace FoodStore.Tests.FavoritesServiceTests
         public void Setup()
         {
             var options = new DbContextOptionsBuilder<FoodStoreDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // isolate tests
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) 
                 .Options;
 
             dbContext = new FoodStoreDbContext(options);

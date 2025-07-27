@@ -95,6 +95,7 @@ namespace FoodStore
             using (var scope = scopeFactory.CreateScope())
             {
                 await AdminSeeder.SeedAdminAsync(scope.ServiceProvider);
+
             }
 
             app.MapControllerRoute(

@@ -16,29 +16,36 @@ namespace FoodStore.Data.Configuration
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            string username = "admin@foodstore.com";
-            string password = "Admin123!";
-            string roleName = "Admin";
-
-            if (await roleManager.FindByNameAsync(roleName) == null)
+            string adminEmail = "admin@foodstore.com";
+            string adminPassword = "Admin123!";
+            string adminRole = "Admin";
+            string userRole = "User"; 
+          
+            if (!await roleManager.RoleExistsAsync(adminRole))
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                await roleManager.CreateAsync(new IdentityRole(adminRole));
             }
 
-            if (await userManager.FindByNameAsync(username) == null)
+            if (!await roleManager.RoleExistsAsync(userRole))
             {
-                ApplicationUser user = new ApplicationUser()
+                await roleManager.CreateAsync(new IdentityRole(userRole));
+            }
+
+            if (await userManager.FindByNameAsync(adminEmail) == null)
+            {
+                var adminUser = new ApplicationUser
                 {
-                    UserName = username,
-                    Email = "admin@foodstore.com",
-                    EmailConfirmed = true,
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true
                 };
 
-                var result = await userManager.CreateAsync(user, password);
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, roleName);
+                    await userManager.AddToRoleAsync(adminUser, adminRole);
+                    await userManager.AddToRoleAsync(adminUser, userRole); 
                 }
             }
         }

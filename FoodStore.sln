@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodStore.ViewModels", "Foo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodStore.Services.Core", "FoodStore.Services.Core\FoodStore.Services.Core.csproj", "{EA863BA0-74E4-4BD4-AA89-A127E55D4FE6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{760FFC80-2D93-44D3-BCDE-CA64970044F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodStore.Tests", "FoodStore.Tests\FoodStore.Tests.csproj", "{53F800AA-8AED-4A29-B4B6-ADD523295740}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,10 @@ Global
 		{EA863BA0-74E4-4BD4-AA89-A127E55D4FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA863BA0-74E4-4BD4-AA89-A127E55D4FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA863BA0-74E4-4BD4-AA89-A127E55D4FE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53F800AA-8AED-4A29-B4B6-ADD523295740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53F800AA-8AED-4A29-B4B6-ADD523295740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53F800AA-8AED-4A29-B4B6-ADD523295740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53F800AA-8AED-4A29-B4B6-ADD523295740}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +69,7 @@ Global
 		{7A0BD257-32E7-4D5F-9492-7CE3474C8248} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{34A57E63-F6C6-46F5-AF5E-36E0EE361C37} = {4A52D407-A741-4969-93CD-9DFD249B07C2}
 		{EA863BA0-74E4-4BD4-AA89-A127E55D4FE6} = {DE793A43-11FA-4476-AD7A-B06CE00C8D6D}
+		{53F800AA-8AED-4A29-B4B6-ADD523295740} = {760FFC80-2D93-44D3-BCDE-CA64970044F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D3BDA6E-EA80-461D-B62B-C056D0A2F140}

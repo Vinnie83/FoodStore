@@ -66,6 +66,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int productId)
         {
             try
@@ -86,6 +87,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Clear()
         {
             try
@@ -106,7 +108,6 @@ namespace FoodStore.Controllers
         }
 
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()
         {
             try
@@ -129,6 +130,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CheckoutConfirm()
         {
             try
@@ -203,6 +205,7 @@ namespace FoodStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmCancel(CancelOrderViewModel model)
         {
             try

@@ -28,9 +28,13 @@ namespace FoodStore.Services.Core
             var query = this.dbContext.Orders
             .Where(o => o.OrderStatus == OrderStatus.Processed || o.OrderStatus == OrderStatus.Delivered);
 
-            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderStatus>(status, out var parsedStatus))
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderStatus>(status, ignoreCase: true, out var parsedStatus))
             {
                 query = query.Where(o => o.OrderStatus == parsedStatus);
+            }
+            else
+            {
+                query = query.Where(o => o.OrderStatus == OrderStatus.Processed || o.OrderStatus == OrderStatus.Delivered);
             }
 
             var projected = query

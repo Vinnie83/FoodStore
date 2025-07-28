@@ -60,28 +60,45 @@
     </tbody>
 </table>
 
-<nav>
-    <ul class="pagination">
-        @if (Model.Orders.HasPreviousPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(Model.Orders.PageIndex - 1)">Previous</a>
-            </li>
-        }
+@if (Model.Orders.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @if (Model.Orders.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.Orders.PageIndex - 1)"
+                       asp-route-SelectedStatus="@Model.SelectedStatus">
+                        Previous
+                    </a>
+                </li>
+            }
 
-        @if (Model.Orders.TotalPages > 1)
-        {
-            <li class="page-item active">
-                <span class="page-link">@Model.Orders.PageIndex</span>
-            </li>
-        }
+            @for (int i = 1; i <= Model.Orders.TotalPages; i++)
+            {
+                <li class="page-item @(Model.Orders.PageIndex == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-SelectedStatus="@Model.SelectedStatus">
+                        @i
+                    </a>
+                </li>
+            }
 
-
-        @if (Model.Orders.HasNextPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(Model.Orders.PageIndex + 1)">Next</a>
-            </li>
-        }
-    </ul>
-</nav>
+            @if (Model.Orders.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.Orders.PageIndex + 1)"
+                       asp-route-SelectedStatus="@Model.SelectedStatus">
+                        Next
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

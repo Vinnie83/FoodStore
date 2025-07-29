@@ -112,7 +112,7 @@ namespace FoodStore.Tests
         [Test]
         public async Task Details_ValidId_ReturnsViewWithProduct()
         {
-            // Arrange
+      
             int productId = 5;
             var expectedProduct = new ProductDetailsViewModel
             {
@@ -130,10 +130,10 @@ namespace FoodStore.Tests
                 .Setup(s => s.GetProductByIdAsync(productId))
                 .ReturnsAsync(expectedProduct);
 
-            // Act
+  
             var result = await controller.Details(productId);
 
-            // Assert
+      
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
 
@@ -146,17 +146,16 @@ namespace FoodStore.Tests
         [Test]
         public async Task Details_ProductNotFound_RedirectsToNotFoundPage()
         {
-            // Arrange
+        
             int productId = 10;
 
             mockProductService
                 .Setup(s => s.GetProductByIdAsync(productId))
                 .ReturnsAsync((ProductDetailsViewModel)null!);
 
-            // Act
+          
             var result = await controller.Details(productId);
 
-            // Assert
             var redirectResult = result as RedirectToActionResult;
             Assert.IsNotNull(redirectResult);
             Assert.That(redirectResult.ActionName, Is.EqualTo("NotFoundPage"));

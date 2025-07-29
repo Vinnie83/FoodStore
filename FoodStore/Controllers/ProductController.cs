@@ -64,15 +64,16 @@ namespace FoodStore.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string query)
         {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return View(Enumerable.Empty<ProductSearchResultViewModel>());
+            }
+
             try
             {
                 var result = await productService.SearchProductsAsync(query);
 
-                if (result == null)
-                {
-                    return RedirectToAction("NotFoundPage", "Error");
-                }
-                return View(result);
+                return View(result ?? Enumerable.Empty<ProductSearchResultViewModel>());
             }
             catch (Exception)
             {

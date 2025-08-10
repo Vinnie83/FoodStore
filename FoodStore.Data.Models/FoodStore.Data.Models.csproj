@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
+    <ProjectReference Include="..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
   </ItemGroup>
 
 </Project>

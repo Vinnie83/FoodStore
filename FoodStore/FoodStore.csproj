@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
     <ProjectReference Include="..\FoodStore.Data.Models\FoodStore.Data.Models.csproj" />
     <ProjectReference Include="..\FoodStore.Data\FoodStore.Data.csproj" />
+    <ProjectReference Include="..\FoodStore.GCommon\FoodStore.GCommon.csproj" />
     <ProjectReference Include="..\FoodStore.Services.Core\FoodStore.Services.Core.csproj" />
     <ProjectReference Include="..\FoodStore.ViewModels\FoodStore.ViewModels.csproj" />
   </ItemGroup>
